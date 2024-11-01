@@ -10,9 +10,9 @@ toc::[]
 
 == Building
 
-This project is built with `cmake` and uses `vcpkg` as it's depedency manager.
+This project is built with `cmake` and uses `vcpkg` as it's package manager.
 The following instructions will guide you on how to install both of these on *macOS*. We plan to add more detailed instructions for other operating systems in the future, but currently details can be found for those https://cmake.org/cmake/download[here for cmake] and https://vcpkg.io/en/getting-started[here for vcpkg].
-After installing both of these you can continue onto the next section.
+After installing both of these you can continue onto the <<Compilation,compilation section>>.
 
 === Installing dependencies (macOS)
 
@@ -23,7 +23,20 @@ Firstly it's recommended to set up https://brew.sh/[homebrew] and install all de
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 ----
 
-After following the instructions and making sure that homebrew is in your PATH we can start by installing `cmake`.
+This command will only install homebrew but not tell your computer _where_ it's located. To do that run the following two commands:
+
+[NOTE]
+====
+This command expects that you're using `zsh`, if you're unsure which shell you're running it's very likely to be `zsh`, if that's not the case, change the command to the equivalent for your respective shell.
+====
+
+[,bash]
+----
+echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' | tee -a ~/.zprofile > /dev/null
+exec zsh
+----
+
+After following those instructions we can start by installing `cmake`.
 
 [,bash]
 ----
@@ -37,7 +50,7 @@ That will install `cmake` and all of it's dependencies. After that we can instal
 brew install vcpkg
 ----
 
-`vcpkg` however requires a little more work before it's fully setup. You might have noticed a caveat listed by homebrew after installing `vcpkg`.
+`vcpkg`, however, requires a little more work before it's fully setup. You might have noticed a caveat listed by homebrew after installing it.
 
 ....
 This formula provides only the 'vcpkg' executable. To use vcpkg:
@@ -49,7 +62,7 @@ What this means is that, while we can now run `vcpkg` on our terminal and get an
 
 [NOTE]
 ====
-The following instructions will install `vcpkg` to your home folder inside the vcpkg subdirectory, but it can be installed to whichever directory you want by simply changing all occurrences of `$HOME/vcpkg` to your desired location.
+The following instructions will install `vcpkg` to your home folder inside the vcpkg subdirectory, it can, however, be installed to whichever directory you want. To do so, simply change all occurrences of `$HOME/vcpkg` to your desired location.
 ====
 
 [,bash]
@@ -58,14 +71,12 @@ git clone https://github.com/microsoft/vcpkg "$HOME/vcpkg"
 ----
 
 This will clone the repository containing the information required by `vcpkg` to the $HOME/vcpkg folder.
-After doing that we have to tell our computer where to find our installation of `vcpkg`, and those instructions will differ depending on which version of macOS you're using, if before Catalina (< 10.15) then run the following command.
+After doing that we have to tell our computer where to find our installation of `vcpkg`, to do that run the following command:
 
-[,bash]
-----
-echo 'export VCPKG_ROOT="$HOME/vcpkg"' | tee -a ~/.bashrc > /dev/null
-----
-
-If you're running macOS Catalina or a later version (>= 10.15) then use this command.
+[NOTE]
+====
+Same as one of the previous commands, this one also relies on you using `zsh`, if that's not the case, then subtitute the command with an equivalent for your respective shell.
+====
 
 [,bash]
 ----
@@ -83,7 +94,7 @@ And that's the installation process done, you can continue onto the <<Compilatio
 
 === Compilation
 
-After git cloning this repository and installing all of the dependencies, `cd` into it's root and create a file named `CMakeUserPresets.json` and add the following information into it:
+After git cloning this repository and installing all of the dependencies, open it and create a file named `CMakeUserPresets.json` in it's root and add the following information into it:
 
 [IMPORTANT]
 ====
