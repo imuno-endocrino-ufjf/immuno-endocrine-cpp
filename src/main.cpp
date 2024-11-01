@@ -1,7 +1,7 @@
-#include <iostream>
+#include <fmt/base.h>
 
 auto main() -> int {
-    std::cout << "Hello World!";
+    fmt::println("Hello World!");
 
     return 0;
 }
