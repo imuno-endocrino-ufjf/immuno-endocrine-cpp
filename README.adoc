@@ -1,10 +1,12 @@
 :source-highlighter: rouge
 :toc:
+:toc-placement!:
 
 = Immuno Endocrine C++
 
 Immuno Endocrine C{plus}{plus} is a C{plus}{plus} implementation of the models originally developed https://github.com/quintelabm/Immuno-endocrine[here]. It's also meant to be a more modular version of the original project, allowing the use of arbitrarally defined models.
 
+toc::[]
 
 == Building
 
