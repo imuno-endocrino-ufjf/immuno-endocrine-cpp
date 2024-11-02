@@ -2,10 +2,7 @@
   "dependencies": [
     {
       "name": "boost-odeint",
-      "features": [
-        "mpi"
-      ]
-    },
-    "fmt"
+      "features": ["mpi"]
+    }
   ]
 }
