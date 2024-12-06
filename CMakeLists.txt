@@ -9,8 +9,19 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 add_executable(immuno-endocrine-cpp
     src/main.cpp
     src/utilities.cpp
+    src/cortisol_cytokines.cpp
+    src/cortisol_cytokines_simulation.cpp
 )
 target_include_directories(immuno-endocrine-cpp PUBLIC "${PROJECT_SOURCE_DIR}/include")
 
 find_package(Boost REQUIRED COMPONENTS numeric_odeint)
 target_link_libraries(immuno-endocrine-cpp PRIVATE Boost::numeric_odeint)
+
+find_package(Matplot++ REQUIRED CONFIG)
+target_link_libraries(immuno-endocrine-cpp PRIVATE Matplot++::cimg  Matplot++::matplot)
+
+find_package(fmt CONFIG REQUIRED)
+target_link_libraries(immuno-endocrine-cpp PRIVATE fmt::fmt)
+
+find_package(nlohmann_json CONFIG REQUIRED)
+target_link_libraries(immuno-endocrine-cpp PRIVATE nlohmann_json::nlohmann_json)

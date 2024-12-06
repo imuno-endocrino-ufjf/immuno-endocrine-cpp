@@ -79,3 +79,5 @@ Temporary Items
 # Zed
 .cache/
 .zed/
+
+output/
