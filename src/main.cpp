@@ -1,3 +1,16 @@
+#if defined(ENABLE_PROFILING) && ENABLE_PROFILING == 1
+    // this is a temporary fix for fmt/color.h using std::copy
+    // this issue has already been fix but a version with the bugfix hasn't been released yet
+    // clang-format off
+    // ↑ without this clang-format tries to put this include beneath the fmt/color.h include which breaks the patch
+    #include <algorithm>
+    // clang-format on
+
+    #include <fmt/base.h>
+    #include <fmt/color.h>
+    #include <fmt/core.h>
+#endif
+
 #include <iostream>
 #include <string>
 
