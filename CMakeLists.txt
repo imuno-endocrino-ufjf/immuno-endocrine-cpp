@@ -14,6 +14,10 @@ add_executable(immuno-endocrine-cpp
 )
 target_include_directories(immuno-endocrine-cpp PUBLIC "${PROJECT_SOURCE_DIR}/include")
 
+if(ENABLE_PROFILING)
+    target_compile_definitions(immuno-endocrine-cpp PUBLIC ENABLE_PROFILING=1)
+endif()
+
 find_package(Boost REQUIRED COMPONENTS numeric_odeint)
 target_link_libraries(immuno-endocrine-cpp PRIVATE Boost::numeric_odeint)
 
