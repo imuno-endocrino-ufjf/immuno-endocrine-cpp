@@ -20,6 +20,10 @@ int main(int argc, char *argv[]) {
     std::filesystem::path input_path;
     int days = 0;
 
+#if defined(ENABLE_PROFILING) && ENABLE_PROFILING == 1
+    fmt::print(fg(fmt::color::dark_golden_rod) | fmt::emphasis::bold, "Profiling enabled!\n\n");
+#endif
+
     for (int i = 1; i < argc; i++) {
         if (std::string(argv[i]).compare("-d") == 0 || std::string(argv[i]).compare("--days") == 0) {
             if (argv[i + 1] != nullptr) {
