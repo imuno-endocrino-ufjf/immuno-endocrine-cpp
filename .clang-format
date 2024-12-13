@@ -12,7 +12,7 @@ IndentCaseBlocks : true
 IndentCaseLabels : true
 IndentExternBlock : true
 IndentGotoLabels : true
-IndentPPDirectives : AfterHash
+IndentPPDirectives : BeforeHash
 IndentRequiresClause : true
 IndentWidth : 4
 InsertBraces : true
