@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/configuration.schema.json",
+  "title": "Cortisol Cytokine Simulation Configuration",
+  "description": "Defines the cortisol cytokine simulation configuration options and parameters",
+  "type": "object",
+  "properties": {
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "k_6": {
+          "type": "number"
+        }
+      },
+      "required": ["k_6"]
+    }
+  },
+  "required": ["parameters"]
+}
