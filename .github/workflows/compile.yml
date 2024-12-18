@@ -34,6 +34,24 @@ jobs:
         run: |
           echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
+      - name: Create CMakeUserPresets.json
+        run: >
+          echo '{
+            "version": 2,
+            "configurePresets": [
+              {
+                "name": "release",
+                "inherits": "vcpkg-release"
+                },
+              {
+                "name": "debug",
+                "inherits": "vcpkg-debug"
+              }
+            ]
+          }
+          ' |
+          tee -a ${{ github.workspace }}/CMakeUserPresets.json > /dev/null
+
       - name: Configure CMake
         # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
         # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
