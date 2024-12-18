@@ -2,6 +2,13 @@
 
 #include <matplot/freestanding/plot.h>
 
+#ifndef NDEBUG
+    #include <fmt/chrono.h>
+    #include <fmt/color.h>
+
+    #include <chrono>
+#endif
+
 #include <cmath>
 #include <filesystem>
 #include <iostream>
@@ -251,10 +258,25 @@ void CortisolCytokines::plotResults(const std::vector<std::vector<double>> &stat
         }
     }
 
-    for (int i = 0; i < 8; i++) {
-        auto figure = matplot::plot(times, separated_states[i]);
+#ifndef NDEBUG
+    auto previous_plot_time = std::chrono::high_resolution_clock::now();
+#endif
 
-        const std::filesystem::path FILE_PATH = "output/" + FILE_NAMES[i] + "_" + std::to_string(current_loop) + ".svg";
-        matplot::save(FILE_PATH);
+    for (int i = 0; i < 8; i++) {
+        auto figure = matplot::figure(true);
+        auto axes = figure->current_axes();
+        axes->plot(times, separated_states[i]);
+
+        const std::filesystem::path FILE_PATH = "output/" + FILE_NAMES[i] + "_" + std::to_string(current_loop) + ".png";
+        figure->save(FILE_PATH);
+
+#ifndef NDEBUG
+        auto current_plot_time = std::chrono::high_resolution_clock::now();
+        auto current_plot_duration = std::chrono::duration_cast<std::chrono::microseconds>(current_plot_time - previous_plot_time);
+
+        fmt::print(fg(fmt::color::dark_golden_rod) | fmt::emphasis::bold, "->{} plotting done. Plotting duration: {} ({})\n", FILE_NAMES[i], current_plot_duration, std::chrono::duration_cast<std::chrono::seconds>(current_plot_duration));
+
+        previous_plot_time = current_plot_time;
+#endif
     }
 };

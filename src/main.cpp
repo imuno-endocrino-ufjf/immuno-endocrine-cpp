@@ -1,3 +1,16 @@
+#ifndef NDEBUG
+    // this is a temporary fix for fmt/color.h using std::copy
+    // this issue has already been fix but a version with the bugfix hasn't been released yet
+    // clang-format off
+    // ↑ without this clang-format tries to put this include beneath the fmt/color.h include which breaks the patch
+    #include <algorithm>
+    // clang-format on
+
+    #include <fmt/base.h>
+    #include <fmt/color.h>
+    #include <fmt/core.h>
+#endif
+
 #include <iostream>
 #include <string>
 
@@ -6,6 +19,10 @@
 int main(int argc, char *argv[]) {
     std::filesystem::path input_path;
     int days = 0;
+
+#ifndef NDEBUG
+    fmt::print(fg(fmt::color::dark_golden_rod) | fmt::emphasis::bold, "Profiling enabled!\n\n");
+#endif
 
     for (int i = 1; i < argc; i++) {
         if (std::string(argv[i]).compare("-d") == 0 || std::string(argv[i]).compare("--days") == 0) {

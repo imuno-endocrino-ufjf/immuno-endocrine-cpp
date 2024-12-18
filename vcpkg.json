@@ -1,16 +1,3 @@
 {
-  "dependencies": [
-    {
-      "name": "boost-odeint",
-      "features": [
-        "mpi"
-      ]
-    },
-    "fmt",
-    "glad",
-    "glfw3",
-    "matplotplusplus",
-    "openmpi",
-    "nlohmann-json"
-  ]
+  "dependencies": ["boost-odeint", "fmt", "matplotplusplus", "nlohmann-json"]
 }
