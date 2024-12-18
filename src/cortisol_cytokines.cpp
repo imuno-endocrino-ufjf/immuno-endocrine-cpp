@@ -1,6 +1,6 @@
 #include "cortisol_cytokines.hpp"
 
-#include <matplot/freestanding/plot.h>
+#include <matplot/matplot.h>
 
 #ifndef NDEBUG
     #include <fmt/chrono.h>
