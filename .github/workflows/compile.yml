@@ -2,8 +2,9 @@ name: Compile and Release Project
 
 on:
   push:
-    tags:
-      - "*"
+    branches: [main]
+  pull_request:
+    branches: [main]
 
 permissions:
   contents: write
@@ -65,9 +66,38 @@ jobs:
       - name: Rename output
         run: mv ${{ github.workspace }}/build/immuno-endocrine-cpp* ${{ github.workspace }}/build/immuno-endocrine-cpp-${{ matrix.os }}
 
+      - uses: actions/upload-artifact@v4
+        with:
+          name: immuno-endocrine-cpp*
+          path: ${{ github.workspace }}/build
+
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Get current date
+        run: echo "current_date=$(date +%Y-%m-%dT%H%M)" >> $GITHUB_ENV
+
+      - name: Create tag
+        uses: actions/github-script@v5
+        with:
+          script: |
+            github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: 'refs/tags/${{ env.current_date }}',
+              sha: context.sha
+            })
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: ${{ github.workspace }}/artifacts
+
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ env.current_date }}
           files: |
-            ${{ github.workspace }}/build/immuno-endocrine-cpp-${{ matrix.os }}
-            ${{ github.workspace }}/build/immuno-endocrine-cpp-${{ matrix.os }}.exe
+            ${{ github.workspace }}/artifacts/immuno-endocrine-cpp-macos-latest
+            ${{ github.workspace }}/artifacts/immuno-endocrine-cpp-ubuntu-latest
+            ${{ github.workspace }}/artifacts/immuno-endocrine-cpp-windows-latest.exe
