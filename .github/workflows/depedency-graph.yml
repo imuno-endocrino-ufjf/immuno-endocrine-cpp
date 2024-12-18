@@ -12,7 +12,7 @@ env:
   VCPKG_FEATURE_FLAGS: dependencygraph
 
 jobs:
-  build:
+  generate-graph:
     runs-on: ubuntu-latest
 
     steps:
