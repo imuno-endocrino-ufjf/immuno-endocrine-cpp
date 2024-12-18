@@ -34,6 +34,9 @@ jobs:
         run: |
           echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
 
+      - name: Clone current vcpkg version
+        run: git clone https://github.com/microsoft/vcpkg "${{ github.workspace }}/vcpkg"
+
       - name: Create CMakeUserPresets.json
         run: |
           touch ${{ github.workspace }}/CMakeUserPresets.json
@@ -42,11 +45,17 @@ jobs:
               "configurePresets": [
                 {
                   "name": "release",
-                  "inherits": "vcpkg-release"
+                  "inherits": "vcpkg-release",
+                  "environment": {
+                    "VCPKG_ROOT": "${{ github.workspace }}/vcpkg"
+                  }
                 },
                 {
                   "name": "debug",
-                  "inherits": "vcpkg-debug"
+                  "inherits": "vcpkg-debug",
+                  "environment": {
+                    "VCPKG_ROOT": "${{ github.workspace }}/vcpkg"
+                  }
                 }
               ]
             }' > ${{ github.workspace }}/CMakeUserPresets.json
