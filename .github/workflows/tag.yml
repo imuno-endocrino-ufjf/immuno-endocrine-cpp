@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [$default-branch]
 
+permissions:
+  contents: write
+
 jobs:
   tag:
     runs-on: ubuntu-latest
