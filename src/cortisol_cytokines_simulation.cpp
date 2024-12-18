@@ -2,7 +2,7 @@
 
 #include <fmt/base.h>
 
-#if defined(ENABLE_PROFILING) && ENABLE_PROFILING == 1
+#ifndef NDEBUG
     #include <fmt/chrono.h>
     #include <fmt/color.h>
 #endif
@@ -39,13 +39,13 @@ void CortisolCytokinesSimulation::startSimulation() {
 
     fmt::println("Starting simulation.");
 
-#if defined(ENABLE_PROFILING) && ENABLE_PROFILING == 1
+#ifndef NDEBUG
     auto simulation_start = std::chrono::high_resolution_clock::now();
 #endif
 
     boost::numeric::odeint::integrate(cortisol_cytokines, x, 0.0, double(days), 0.001, Utilities::IntegralObserver(states, times));
 
-#if defined(ENABLE_PROFILING) && ENABLE_PROFILING == 1
+#ifndef NDEBUG
     auto simulation_end = std::chrono::high_resolution_clock::now();
 
     auto simulation_duration = std::chrono::duration_cast<std::chrono::microseconds>(simulation_end - simulation_start);
@@ -54,13 +54,13 @@ void CortisolCytokinesSimulation::startSimulation() {
 
     fmt::println("Starting plotting.");
 
-#if defined(ENABLE_PROFILING) && ENABLE_PROFILING == 1
+#ifndef NDEBUG
     auto plotting_start = std::chrono::high_resolution_clock::now();
 #endif
 
     CortisolCytokines::plotResults(states, times, 0);
 
-#if defined(ENABLE_PROFILING) && ENABLE_PROFILING == 1
+#ifndef NDEBUG
     auto plotting_end = std::chrono::high_resolution_clock::now();
 
     auto plotting_duration = std::chrono::duration_cast<std::chrono::microseconds>(plotting_end - plotting_start);

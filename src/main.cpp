@@ -1,4 +1,4 @@
-#if defined(ENABLE_PROFILING) && ENABLE_PROFILING == 1
+#ifndef NDEBUG
     // this is a temporary fix for fmt/color.h using std::copy
     // this issue has already been fix but a version with the bugfix hasn't been released yet
     // clang-format off
@@ -20,7 +20,7 @@ int main(int argc, char *argv[]) {
     std::filesystem::path input_path;
     int days = 0;
 
-#if defined(ENABLE_PROFILING) && ENABLE_PROFILING == 1
+#ifndef NDEBUG
     fmt::print(fg(fmt::color::dark_golden_rod) | fmt::emphasis::bold, "Profiling enabled!\n\n");
 #endif
 

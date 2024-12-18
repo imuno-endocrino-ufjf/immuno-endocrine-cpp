@@ -14,8 +14,10 @@ add_executable(immuno-endocrine-cpp
 )
 target_include_directories(immuno-endocrine-cpp PUBLIC "${PROJECT_SOURCE_DIR}/include")
 
-if(ENABLE_PROFILING)
-    target_compile_definitions(immuno-endocrine-cpp PUBLIC ENABLE_PROFILING=1)
+if(ENABLE_DEBUG)
+    set(CMAKE_BUILD_TYPE "Debug")
+else()
+    set(CMAKE_BUILD_TYPE "Release")
 endif()
 
 find_package(Boost REQUIRED COMPONENTS numeric_odeint)

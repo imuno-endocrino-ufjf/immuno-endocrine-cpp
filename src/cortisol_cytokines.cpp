@@ -2,7 +2,7 @@
 
 #include <matplot/freestanding/plot.h>
 
-#if defined(ENABLE_PROFILING) && ENABLE_PROFILING == 1
+#ifndef NDEBUG
     #include <fmt/chrono.h>
     #include <fmt/color.h>
 
@@ -258,7 +258,7 @@ void CortisolCytokines::plotResults(const std::vector<std::vector<double>> &stat
         }
     }
 
-#if defined(ENABLE_PROFILING) && ENABLE_PROFILING == 1
+#ifndef NDEBUG
     auto previous_plot_time = std::chrono::high_resolution_clock::now();
 #endif
 
@@ -270,7 +270,7 @@ void CortisolCytokines::plotResults(const std::vector<std::vector<double>> &stat
         const std::filesystem::path FILE_PATH = "output/" + FILE_NAMES[i] + "_" + std::to_string(current_loop) + ".png";
         figure->save(FILE_PATH);
 
-#if defined(ENABLE_PROFILING) && ENABLE_PROFILING == 1
+#ifndef NDEBUG
         auto current_plot_time = std::chrono::high_resolution_clock::now();
         auto current_plot_duration = std::chrono::duration_cast<std::chrono::microseconds>(current_plot_time - previous_plot_time);
 

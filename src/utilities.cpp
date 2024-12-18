@@ -1,6 +1,6 @@
 #include "utilities.hpp"
 
-#if defined(ENABLE_PROFILING) && ENABLE_PROFILING == 1
+#ifndef NDEBUG
     #include <fmt/base.h>
     #include <fmt/chrono.h>
     #include <fmt/color.h>
@@ -26,7 +26,7 @@ namespace Utilities {
     IntegralObserver::IntegralObserver(std::vector<std::vector<double>> &states, std::vector<double> &times): m_states(states), m_times(times) {}
 
     void IntegralObserver::operator()(const std::vector<double> &x, double t) {
-#if defined(ENABLE_PROFILING) && ENABLE_PROFILING == 1
+#ifndef NDEBUG
         if (m_times.size() != 0) {
             int previous_time = m_times[m_times.size() - 1];
             int previous_time_decade = previous_time / 3650;

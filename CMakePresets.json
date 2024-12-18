@@ -2,7 +2,7 @@
   "version": 2,
   "configurePresets": [
     {
-      "name": "vcpkg-rel",
+      "name": "vcpkg-release",
       "generator": "Ninja",
       "binaryDir": "${sourceDir}/build",
       "cacheVariables": {
@@ -11,9 +11,9 @@
     },
     {
       "name": "vcpkg-debug",
-      "inherits": "vcpkg-rel",
+      "inherits": "vcpkg-release",
       "cacheVariables": {
-        "ENABLE_PROFILING": true
+        "ENABLE_DEBUG": true
       }
     }
   ]

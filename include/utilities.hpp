@@ -4,7 +4,7 @@
 #include <map>
 #include <vector>
 
-#if defined(ENABLE_PROFILING) && ENABLE_PROFILING == 1
+#ifndef NDEBUG
     #include <chrono>
 #endif
 
@@ -16,7 +16,7 @@ namespace Utilities {
             std::vector<std::vector<double>> &m_states;
             std::vector<double> &m_times;
 
-#if defined(ENABLE_PROFILING) && ENABLE_PROFILING == 1
+#ifndef NDEBUG
             std::chrono::time_point<std::chrono::steady_clock, std::chrono::duration<long long, std::ratio<1LL, 1000000000LL>>> previous_decade_time = std::chrono::high_resolution_clock::now();
 #endif
 
