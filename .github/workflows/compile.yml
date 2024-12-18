@@ -37,6 +37,9 @@ jobs:
       - name: Clone current vcpkg version
         run: git clone https://github.com/microsoft/vcpkg "${{ github.workspace }}/vcpkg"
 
+      - name: Install Ninja
+        uses: seanmiddleditch/gha-setup-ninja@master
+
       - name: Create CMakeUserPresets.json
         run: |
           touch ${{ github.workspace }}/CMakeUserPresets.json
