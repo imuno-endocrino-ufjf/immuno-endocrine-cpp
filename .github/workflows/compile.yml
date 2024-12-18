@@ -63,9 +63,6 @@ jobs:
       - name: Build
         run: cmake --build ${{ github.workspace }}/build
 
-      - name: Rename output
-        run: mv ${{ github.workspace }}/build/immuno-endocrine-cpp* ${{ github.workspace }}/build/immuno-endocrine-cpp-${{ matrix.os }}-${{ matrix.build_type }}
-
       - uses: actions/upload-artifact@v4
         with:
           name: immuno-endocrine-cpp-${{ matrix.os }}-${{ matrix.build_type }}
