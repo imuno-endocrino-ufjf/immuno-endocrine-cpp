@@ -63,10 +63,13 @@ jobs:
       - name: Build
         run: cmake --build ${{ github.workspace }}/build
 
+      - name: Rename
+        run: mv ${{ github.workspace }}/build/immuno-endocrine-cpp${{ matrix.os == 'windows-latest' && '.exe' || '' }} ${{ github.workspace }}/build/immuno-endocrine-cpp-${{ matrix.os }}-${{ matrix.build_type }}${{ matrix.os == 'windows-latest' && '.exe' || '' }}
+
       - uses: actions/upload-artifact@v4
         with:
           name: immuno-endocrine-cpp-${{ matrix.os }}-${{ matrix.build_type }}${{ matrix.os == 'windows-latest' && '.exe' || '' }}
-          path: ${{ github.workspace }}/build/immuno-endocrine-cpp*
+          path: ${{ github.workspace }}/build/immuno-endocrine-cpp-${{ matrix.os }}-${{ matrix.build_type }}${{ matrix.os == 'windows-latest' && '.exe' || '' }}
 
   release:
     runs-on: ubuntu-latest
