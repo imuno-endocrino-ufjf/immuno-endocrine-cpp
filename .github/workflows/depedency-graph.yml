@@ -18,14 +18,5 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Clone current vcpkg version
-        run: git clone https://github.com/microsoft/vcpkg "${{ github.workspace }}/vcpkg"
-
-      - name: Setup vcpkg
-        run: .${{ github.workspace }}/vcpkg/bootstrap-vcpkg.sh
-
-      - name: List vcpkg directory
-        run: ls -R "${{ github.workspace }}/vcpkg"
-
       - name: Run vcpkg
-        run: ${{ github.workspace }}/vcpkg/vcpkg install --dry-run
+        run: vcpkg install --dry-run
