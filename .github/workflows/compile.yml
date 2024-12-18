@@ -1,0 +1,73 @@
+name: Compile and Release Project
+
+on:
+  push:
+    tags:
+      - "*"
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        build_type: [release, debug]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Clone current vcpkg version
+        run: git clone https://github.com/microsoft/vcpkg "${{ github.workspace }}/vcpkg"
+
+      - name: Setup MSVC on Windows
+        uses: ilammy/msvc-dev-cmd@v1
+        if: matrix.os == 'windows-latest'
+
+      - name: Install Ninja
+        uses: seanmiddleditch/gha-setup-ninja@master
+
+      - name: Create CMakeUserPresets.json
+        run: |
+          touch ${{ github.workspace }}/CMakeUserPresets.json
+          echo '{
+              "version": 2,
+              "configurePresets": [
+                {
+                  "name": "release",
+                  "inherits": "vcpkg-release",
+                  "environment": {
+                    "VCPKG_ROOT": "./vcpkg"
+                  }
+                },
+                {
+                  "name": "debug",
+                  "inherits": "vcpkg-debug",
+                  "environment": {
+                    "VCPKG_ROOT": "./vcpkg"
+                  }
+                }
+              ]
+            }' > ${{ github.workspace }}/CMakeUserPresets.json
+          cat ${{ github.workspace }}/CMakeUserPresets.json
+
+      - name: Configure CMake
+        run: cmake --preset=${{ matrix.build_type }}
+
+      - name: Build
+        run: cmake --build ${{ github.workspace }}/build
+
+      - name: Rename output
+        run: mv ${{ github.workspace }}/build/immuno-endocrine-cpp* ${{ github.workspace }}/build/immuno-endocrine-cpp-${{ matrix.os }}
+
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ${{ github.workspace }}/build/immuno-endocrine-cpp-${{ matrix.os }}
+            ${{ github.workspace }}/build/immuno-endocrine-cpp-${{ matrix.os }}.exe

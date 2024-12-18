@@ -1,6 +1,6 @@
 #include "cortisol_cytokines.hpp"
 
-#include <matplot/freestanding/plot.h>
+#include <matplot/matplot.h>
 
 #ifndef NDEBUG
     #include <fmt/chrono.h>
@@ -268,7 +268,7 @@ void CortisolCytokines::plotResults(const std::vector<std::vector<double>> &stat
         axes->plot(times, separated_states[i]);
 
         const std::filesystem::path FILE_PATH = "output/" + FILE_NAMES[i] + "_" + std::to_string(current_loop) + ".png";
-        figure->save(FILE_PATH);
+        figure->save(FILE_PATH.string());
 
 #ifndef NDEBUG
         auto current_plot_time = std::chrono::high_resolution_clock::now();
