@@ -1,0 +1,35 @@
+name: Generate Results
+
+on:
+  workflow_run:
+    workflows: [Compile and Release Project]
+    types:
+      - completed
+
+permissions:
+  actions: read
+
+jobs:
+  generate-results:
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        build_type: [release, debug]
+
+    steps:
+      - name: List workflow id
+        run: echo ${{ github.event.workflow_run.id }}
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: immuno-endocrine-cpp-${{ matrix.os }}-${{ matrix.build_type }}${{ matrix.os == 'windows-latest' && '.exe' || '' }}
+          path: ${{ github.workspace }}/artifacts
+          repository: imuno-endocrino-ufjf/immuno-endocrine-cpp
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: List artifacts
+        run: ls -R ${{ github.workspace }}/artifacts
