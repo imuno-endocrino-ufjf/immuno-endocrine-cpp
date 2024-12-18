@@ -50,14 +50,14 @@ jobs:
                   "name": "release",
                   "inherits": "vcpkg-release",
                   "environment": {
-                    "VCPKG_ROOT": "${{ github.workspace }}/vcpkg"
+                    "VCPKG_ROOT": "./vcpkg"
                   }
                 },
                 {
                   "name": "debug",
                   "inherits": "vcpkg-debug",
                   "environment": {
-                    "VCPKG_ROOT": "${{ github.workspace }}/vcpkg"
+                    "VCPKG_ROOT": "./vcpkg"
                   }
                 }
               ]
