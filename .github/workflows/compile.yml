@@ -68,8 +68,8 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: immuno-endocrine-cpp*
-          path: ${{ github.workspace }}/build
+          name: immuno-endocrine-cpp-${{ matrix.os }}
+          path: ${{ github.workspace }}/build/immuno-endocrine-cpp-${{ matrix.os }}
 
   release:
     runs-on: ubuntu-latest
@@ -102,4 +102,4 @@ jobs:
           files: |
             ${{ github.workspace }}/artifacts/immuno-endocrine-cpp-macos-latest
             ${{ github.workspace }}/artifacts/immuno-endocrine-cpp-ubuntu-latest
-            ${{ github.workspace }}/artifacts/immuno-endocrine-cpp-windows-latest.exe
+            ${{ github.workspace }}/artifacts/immuno-endocrine-cpp-windows-latest
