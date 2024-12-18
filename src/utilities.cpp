@@ -16,7 +16,7 @@ namespace Utilities {
 
         std::map<double, std::vector<double>> mapped_states;
 
-        for (size_t i = 0; i < states.size(); i++) {
+        for (std::size_t i = 0; i < states.size(); i++) {
             mapped_states[times[i]] = states[i];
         }
 
