@@ -1,4 +1,4 @@
-name: Compile and Release Project
+name: Compile, Release and Generate Project Results
 
 on:
   push:
@@ -118,3 +118,30 @@ jobs:
             ${{ github.workspace }}/artifacts/immuno-endocrine-cpp-ubuntu-latest-release
             ${{ github.workspace }}/artifacts/immuno-endocrine-cpp-windows-latest-debug.exe
             ${{ github.workspace }}/artifacts/immuno-endocrine-cpp-windows-latest-release.exe
+
+  generate-results:
+    runs-on: ${{ matrix.os }}
+
+    needs: build
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        build_type: [release, debug]
+
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: immuno-endocrine-cpp-${{ matrix.os }}-${{ matrix.build_type }}${{ matrix.os == 'windows-latest' && '.exe' || '' }}
+          path: ${{ github.workspace }}/artifacts
+
+      - name: Run binary
+        run: .${{ github.workspace }}/immuno-endocrine-cpp-${{ matrix.os }}-${{ matrix.build_type }}${{ matrix.os == 'windows-latest' && '.exe' || '' }}
+
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: immuno-endocrine-cpp-results-${{ matrix.os }}-${{ matrix.build_type }}
+          path: ${{ github.workspace }}/output
