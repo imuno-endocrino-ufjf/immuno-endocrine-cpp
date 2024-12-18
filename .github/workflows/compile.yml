@@ -9,9 +9,9 @@ on:
 permissions:
   contents: write
 
-env: 
-    VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
-    
+env:
+  VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
