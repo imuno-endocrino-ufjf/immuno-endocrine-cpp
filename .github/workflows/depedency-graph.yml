@@ -21,5 +21,8 @@ jobs:
       - name: Clone current vcpkg version
         run: git clone https://github.com/microsoft/vcpkg "${{ github.workspace }}/vcpkg"
 
+      - name: List vcpkg directory
+        run: ls -R "${{ github.workspace }}/vcpkg"
+
       - name: Run vcpkg
         run: ${{ github.workspace }}/vcpkg/vcpkg install --dry-run
