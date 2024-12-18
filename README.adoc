@@ -1,0 +1,144 @@
+:source-highlighter: rouge
+:toc:
+:toc-placement!:
+
+= Immuno Endocrine C++
+
+Immuno Endocrine C{plus}{plus} is a C{plus}{plus} implementation of the models originally developed https://github.com/quintelabm/Immuno-endocrine[here]. It's also meant to be a more modular version of the original project, allowing the use of arbitrarally defined models.
+
+toc::[]
+
+== Building
+
+This project is built with `cmake` and uses `vcpkg` as it's package manager.
+The following instructions will guide you on how to install both of these on *macOS*. We plan to add more detailed instructions for other operating systems in the future, but currently details can be found for those https://cmake.org/cmake/download[here for cmake] and https://vcpkg.io/en/getting-started[here for vcpkg].
+After installing both of these you can continue onto the <<Compilation,compilation section>>.
+
+=== Installing dependencies (macOS)
+
+Firstly it's recommended to set up https://brew.sh/[homebrew] and install all dependencies through it.
+
+[,bash]
+----
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+----
+
+This command will only install homebrew but not tell your computer _where_ it's located. To do that run the following two commands:
+
+[NOTE]
+====
+This command expects that you're using `zsh`, if you're unsure which shell you're running it's very likely to be `zsh`, if that's not the case, change the command to the equivalent for your respective shell.
+====
+
+[,bash]
+----
+echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' | tee -a ~/.zprofile > /dev/null
+exec zsh
+----
+
+After following those instructions we can start by installing `cmake`.
+
+[,bash]
+----
+brew install cmake
+----
+
+That will install `cmake` and all of it's dependencies. After that we can install `vcpkg`.
+
+[,bash]
+----
+brew install vcpkg
+----
+
+`vcpkg`, however, requires a little more work before it's fully setup. You might have noticed a caveat listed by homebrew after installing it.
+
+....
+This formula provides only the 'vcpkg' executable. To use vcpkg:
+ git clone https://github.com/microsoft/vcpkg "$HOME/vcpkg"
+ export VCPKG_ROOT="$HOME/vcpkg"
+....
+
+What this means is that, while we can now run `vcpkg` on our terminal and get an output, all of the logic required for it to function still has to be installed. To do that we will run the commands given to us by homebrew.
+
+[NOTE]
+====
+The following instructions will install `vcpkg` to your home folder inside the vcpkg subdirectory, it can, however, be installed to whichever directory you want. To do so, simply change all occurrences of `$HOME/vcpkg` to your desired location.
+====
+
+[,bash]
+----
+git clone https://github.com/microsoft/vcpkg "$HOME/vcpkg"
+----
+
+This will clone the repository containing the information required by `vcpkg` to the $HOME/vcpkg folder.
+After doing that we have to tell our computer where to find our installation of `vcpkg`, to do that run the following command:
+
+[NOTE]
+====
+Same as one of the previous commands, this one also relies on you using `zsh`, if that's not the case, then subtitute the command with an equivalent for your respective shell.
+====
+
+[,bash]
+----
+echo 'export VCPKG_ROOT="$HOME/vcpkg"' | tee -a ~/.zshrc > /dev/null
+----
+
+After this setup, we will now install another dependency that wasn't installed automatically with `vcpkg` called `pkg-config`.
+
+[,bash]
+----
+brew install pkg-config
+----
+
+And that's the installation process done, you can continue onto the <<Compilation,compilation section>>.
+
+=== Compilation
+
+After git cloning this repository and installing all of the dependencies, open it and create a file named `CMakeUserPresets.json` in it's root and add the following information into it:
+
+[IMPORTANT]
+====
+The following file specifies the `vcpkg` directory as `~/vcpkg`, if you followed the install instructions this is likely where it's installed, however, if you installed it elsewhere remember to change the `VCPKG_ROOT` line to your install location.
+====
+
+[,json]
+----
+{
+  "version": 2,
+  "configurePresets": [
+    {
+      "name": "default",
+      "inherits": "vcpkg",
+      "environment": {
+        "VCPKG_ROOT": "~/vcpkg"
+      }
+    }
+  ]
+}
+----
+
+Afterwards define the `cmake` preset by running this command:
+
+[IMPORTANT]
+====
+This command may take a while to complete. Don't worry if it gets stuck at `building [something]`, it is still processing the project.
+====
+
+[,bash]
+----
+cmake --preset=default
+----
+
+Next we will actually build the project by running:
+
+[,bash]
+----
+cmake --build build
+----
+
+Now we are done compiling the program and can run it through this command:
+
+[,bash]
+----
+./build/immuno-endocrine-cpp
+----
