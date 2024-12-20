@@ -140,6 +140,18 @@ jobs:
       - name: List workspace files
         run: ls -R ${{ github.workspace }}
 
+      - name: Install gnuplot (Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt install gnuplot
+
+      - name: Install gnuplot (macOS)
+        if: matrix.os == 'macos-latest'
+        run: brew install gnuplot
+
+      - name: Install gnuplot (Windows)
+        if: matrix.os == 'windows-latest'
+        run: winget install gnuplot
+
       - name: Run binary (UNIX)
         if: matrix.os != 'windows-latest'
         run: |
