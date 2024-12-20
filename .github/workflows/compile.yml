@@ -140,6 +140,25 @@ jobs:
       - name: List workspace files
         run: ls -R ${{ github.workspace }}
 
+      - name: Install gnuplot (Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt install gnuplot
+
+      - name: Install gnuplot (macOS)
+        if: matrix.os == 'macos-latest'
+        continue-on-error: true # Installing from a manual source will always fail
+        run: |
+          wget https://raw.githubusercontent.com/Homebrew/homebrew-core/aa0fb7934a362ccc24f2c8fd19bb347eadebf16b/Formula/g/gnuplot.rb
+          brew install ./gnuplot.rb
+
+      - name: Install winget (Windows)
+        if: matrix.os == 'windows-latest'
+        uses: Cyberboss/install-winget@v1
+
+      - name: Install gnuplot (Windows)
+        if: matrix.os == 'windows-latest'
+        run: winget install gnuplot --disable-interactivity --accept-source-agreements
+
       - name: Run binary (UNIX)
         if: matrix.os != 'windows-latest'
         run: |
