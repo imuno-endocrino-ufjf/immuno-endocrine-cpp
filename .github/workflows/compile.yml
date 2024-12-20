@@ -76,6 +76,9 @@ jobs:
       - name: Rename
         run: mv ${{ github.workspace }}/build/immuno-endocrine-cpp${{ matrix.os == 'windows-latest' && '.exe' || '' }} ${{ github.workspace }}/build/immuno-endocrine-cpp-${{ matrix.os }}-${{ matrix.build_type }}${{ matrix.os == 'windows-latest' && '.exe' || '' }}
 
+      - name: List build output
+        run: ls -R build/
+
       - uses: actions/upload-artifact@v4
         with:
           name: immuno-endocrine-cpp-${{ matrix.os }}-${{ matrix.build_type }}${{ matrix.os == 'windows-latest' && '.exe' || '' }}
