@@ -140,6 +140,28 @@ jobs:
       - name: List workspace files
         run: ls -R ${{ github.workspace }}
 
+      - name: Install gnuplot (Ubuntu)
+        if: matrix.os == 'ubuntu-latest'
+        run: sudo apt install gnuplot
+
+      - name: Install gnuplot (macOS)
+        if: matrix.os == 'macos-latest'
+        run: |
+          wget https://github.com/1633a4a5-2be2-44e6-9337-19d47e79ef32
+          brew install ./gnuplot.rb
+
+      - name: Install gnuplot (Windows)
+        if: matrix.os == 'windows-latest'
+        run: |
+          $progressPreference = 'silentlyContinue'
+          Write-Host "Installing WinGet PowerShell module from PSGallery..."
+          Install-PackageProvider -Name NuGet -Force | Out-Null
+          Install-Module -Name Microsoft.WinGet.Client -Force -Repository PSGallery | Out-Null
+          Write-Host "Using Repair-WinGetPackageManager cmdlet to bootstrap WinGet..."
+          Repair-WinGetPackageManager
+          Write-Host "Done."
+          winget install gnuplot
+
       - name: Run binary (UNIX)
         if: matrix.os != 'windows-latest'
         run: |
