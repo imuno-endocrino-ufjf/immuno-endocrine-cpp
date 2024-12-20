@@ -171,10 +171,6 @@ jobs:
         if: matrix.os == 'windows-latest'
         uses: Cyberboss/install-winget@v1
 
-      - name: Download and Install Visual C++ Redistributable (Windows)
-        if: matrix.os == 'windows-latest'
-        run: winget install Microsoft.VCRedist.2015+.x64 --disable-interactivity --accept-source-agreements
-
       - name: Install gnuplot (Windows)
         if: matrix.os == 'windows-latest'
         run: winget install gnuplot --disable-interactivity --accept-source-agreements
@@ -182,12 +178,12 @@ jobs:
       - name: Run binary (UNIX)
         if: matrix.os != 'windows-latest'
         run: |
-          chmod +x ./immuno-endocrine-cpp-${{ matrix.os }}-${{ matrix.build_type }}${{ matrix.os == 'windows-latest' && '.exe' || '' }}
-          ./immuno-endocrine-cpp-${{ matrix.os }}-${{ matrix.build_type }}${{ matrix.os == 'windows-latest' && '.exe' || '' }}
+          chmod +x ./immuno-endocrine-cpp-${{ matrix.os }}-${{ matrix.build_type }}
+          ./immuno-endocrine-cpp-${{ matrix.os }}-${{ matrix.build_type }}
 
       - name: Run binary (Windows)
         if: matrix.os == 'windows-latest'
-        run: Start-Process -FilePath "immuno-endocrine-cpp-${{ matrix.os }}-${{ matrix.build_type }}${{ matrix.os == 'windows-latest' && '.exe' || '' }}"
+        run: immuno-endocrine-cpp-windows-latest-${{ matrix.build_type }}.exe
 
       - name: Upload results
         uses: actions/upload-artifact@v4
