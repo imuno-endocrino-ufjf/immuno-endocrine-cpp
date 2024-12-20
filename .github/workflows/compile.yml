@@ -81,8 +81,10 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: immuno-endocrine-cpp-${{ matrix.os }}-${{ matrix.build_type }}${{ matrix.os == 'windows-latest' && '.exe' || '' }}
-          path: ${{ github.workspace }}/build/immuno-endocrine-cpp-${{ matrix.os }}-${{ matrix.build_type }}${{ matrix.os == 'windows-latest' && '.exe' || '' }}
+          name: immuno-endocrine-cpp-${{ matrix.os }}-${{ matrix.build_type }}
+          path: |
+            ${{ github.workspace }}/build/immuno-endocrine-cpp-${{ matrix.os }}-${{ matrix.build_type }}${{ matrix.os == 'windows-latest' && '.exe' || '' }}
+            ${{ github.workspace }}/build/fmt.dll
 
   release:
     runs-on: ubuntu-latest
@@ -106,7 +108,6 @@ jobs:
 
       - uses: actions/download-artifact@v4
         with:
-          merge-multiple: true
           path: ${{ github.workspace }}/artifacts
 
       - name: Release
@@ -115,12 +116,12 @@ jobs:
           prerelease: true
           tag_name: ${{ env.current_date }}
           files: |
-            ${{ github.workspace }}/artifacts/immuno-endocrine-cpp-macos-latest-debug
-            ${{ github.workspace }}/artifacts/immuno-endocrine-cpp-macos-latest-release
-            ${{ github.workspace }}/artifacts/immuno-endocrine-cpp-ubuntu-latest-debug
-            ${{ github.workspace }}/artifacts/immuno-endocrine-cpp-ubuntu-latest-release
-            ${{ github.workspace }}/artifacts/immuno-endocrine-cpp-windows-latest-debug.exe
-            ${{ github.workspace }}/artifacts/immuno-endocrine-cpp-windows-latest-release.exe
+            ${{ github.workspace }}/artifacts/immuno-endocrine-cpp-macos-latest-debug/immuno-endocrine-cpp-macos-latest-debug
+            ${{ github.workspace }}/artifacts/immuno-endocrine-cpp-macos-latest-release/immuno-endocrine-cpp-macos-latest-release
+            ${{ github.workspace }}/artifacts/immuno-endocrine-cpp-ubuntu-latest-debug/immuno-endocrine-cpp-ubuntu-latest-debug
+            ${{ github.workspace }}/artifacts/immuno-endocrine-cpp-ubuntu-latest-release/immuno-endocrine-cpp-ubuntu-latest-release
+            ${{ github.workspace }}/artifacts/immuno-endocrine-cpp-windows-latest-debug
+            ${{ github.workspace }}/artifacts/immuno-endocrine-cpp-windows-latest-release
 
   generate-results:
     runs-on: ${{ matrix.os }}
