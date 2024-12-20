@@ -111,6 +111,9 @@ jobs:
         with:
           path: ${{ github.workspace }}/artifacts
 
+      - name: List all artifacts
+        run: ls -R ${{ github.workspace }}/artifacts
+
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
