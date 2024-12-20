@@ -141,7 +141,7 @@ jobs:
         run: ls -R ${{ github.workspace }}
 
       - name: Run binary
-        run: .${{ github.workspace }}/immuno-endocrine-cpp-${{ matrix.os }}-${{ matrix.build_type }}${{ matrix.os == 'windows-latest' && '.exe' || '' }}
+        run: ./immuno-endocrine-cpp-${{ matrix.os }}-${{ matrix.build_type }}${{ matrix.os == 'windows-latest' && '.exe' || '' }}
 
       - name: Upload results
         uses: actions/upload-artifact@v4
