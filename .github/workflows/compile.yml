@@ -167,13 +167,13 @@ jobs:
           wget https://raw.githubusercontent.com/Homebrew/homebrew-core/aa0fb7934a362ccc24f2c8fd19bb347eadebf16b/Formula/g/gnuplot.rb
           brew install ./gnuplot.rb
 
-      - name: Setup MSVC (Windows)
-        uses: ilammy/msvc-dev-cmd@v1
-        if: matrix.os == 'windows-latest'
-
       - name: Install winget (Windows)
         if: matrix.os == 'windows-latest'
         uses: Cyberboss/install-winget@v1
+
+      - name: Download and Install Visual C++ Redistributable (Windows)
+        if: matrix.os == 'windows-latest'
+        run: winget install Microsoft.VCRedist.2015+.x64 --disable-interactivity --accept-source-agreements
 
       - name: Install gnuplot (Windows)
         if: matrix.os == 'windows-latest'
