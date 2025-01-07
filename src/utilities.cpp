@@ -1,7 +1,12 @@
 #include "utilities.hpp"
 
+#include <fmt/base.h>
+#include <fmt/os.h>
+#include <fmt/ranges.h>
+
+#include <filesystem>
+
 #ifndef NDEBUG
-    #include <fmt/base.h>
     #include <fmt/chrono.h>
     #include <fmt/color.h>
 
@@ -63,5 +68,17 @@ namespace Utilities {
 
         m_states.push_back(x);
         m_times.push_back(t);
+    }
+
+    void writeCsv(const std::vector<std::string> &header, const std::vector<std::vector<double>> &values, const std::filesystem::path &file_path) {
+        fmt::ostream file = fmt::output_file(file_path.string());
+
+        file.print("{}\n", fmt::join(header, ","));
+
+        for (auto line : values) {
+            file.print("{}\n", fmt::join(line, ","));
+        }
+
+        file.close();
     }
 }  // namespace Utilities

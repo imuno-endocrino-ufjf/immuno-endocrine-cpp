@@ -1,6 +1,7 @@
 #ifndef __UTILITIES_HPP__
 #define __UTILITIES_HPP__
 
+#include <filesystem>
 #include <map>
 #include <stdexcept>
 #include <vector>
@@ -54,6 +55,8 @@ namespace Utilities {
             IntegralObserver(std::vector<std::vector<double>> &states, std::vector<double> &times);
             void operator()(const std::vector<double> &x, double t);
     };
+
+    void writeCsv(const std::vector<std::string> &header, const std::vector<std::vector<double>> &values, const std::filesystem::path &output_path = "output/values.csv");
 }  // namespace Utilities
 
 #endif
