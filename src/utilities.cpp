@@ -9,7 +9,7 @@
 #endif
 
 namespace Utilities {
-    std::map<double, std::vector<double>> combineStateWithTime(const std::vector<std::vector<double>> &states, const std::vector<double> &times) {
+    std::map<double, std::vector<double>> combineStateWithTimeMap(const std::vector<std::vector<double>> &states, const std::vector<double> &times) {
         if (states.size() != times.size()) {
             throw states.size() - times.size();
         }
@@ -21,6 +21,23 @@ namespace Utilities {
         }
 
         return mapped_states;
+    }
+
+    std::vector<std::vector<double>> combineStateWithTimeVector(const std::vector<std::vector<double>> &states, const std::vector<double> &times) {
+        if (states.size() != times.size()) {
+            throw states.size() - times.size();
+        }
+
+        std::vector<std::vector<double>> joined_vector;
+
+        for (std::size_t i = 0; i < states.size(); i++) {
+            std::vector<double> joined_line = {times[i]};
+            joined_line.append_range(states[i]);
+
+            joined_vector.push_back(joined_line);
+        }
+
+        return joined_vector;
     }
 
     IntegralObserver::IntegralObserver(std::vector<std::vector<double>> &states, std::vector<double> &times): m_states(states), m_times(times) {}
