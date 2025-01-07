@@ -1,6 +1,7 @@
 #include <fmt/base.h>
 #include <fmt/color.h>
 
+#include <filesystem>
 #include <stdexcept>
 #include <string>
 #include <vector>
@@ -20,10 +21,20 @@ int main(int argc, char *argv[]) {
     for (int i = 1; i < argc; i++) {
         try {
             if (
-                auto input_path_return = Utilities::readParameter<std::string>(
+                auto input_path_return = Utilities::readParameter<std::filesystem::path>(
                     {"-i", "--input"},
                     argv[i],
-                    argv[i + 1]
+                    argv[i + 1],
+                    [](std::string input) -> std::filesystem::path {
+                        std::filesystem::path input_path = input;
+
+                        if (!std::filesystem::is_regular_file(input_path)) {
+                            fmt::print("Invalid file path: {}\n", input);
+                            exit(3);
+                        }
+
+                        return input_path;
+                    }
                 )
             ) {
                 input_path = input_path_return.value();
