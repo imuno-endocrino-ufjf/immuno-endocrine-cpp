@@ -3,6 +3,7 @@
 
 #include <filesystem>
 #include <map>
+#include <optional>
 #include <stdexcept>
 #include <vector>
 
