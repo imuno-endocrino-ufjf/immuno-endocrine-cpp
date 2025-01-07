@@ -1,7 +1,12 @@
 #include "utilities.hpp"
 
+#include <fmt/base.h>
+#include <fmt/os.h>
+#include <fmt/ranges.h>
+
+#include <filesystem>
+
 #ifndef NDEBUG
-    #include <fmt/base.h>
     #include <fmt/chrono.h>
     #include <fmt/color.h>
 
@@ -9,7 +14,7 @@
 #endif
 
 namespace Utilities {
-    std::map<double, std::vector<double>> combineStateWithTime(const std::vector<std::vector<double>> &states, const std::vector<double> &times) {
+    std::map<double, std::vector<double>> combineStateWithTimeMap(const std::vector<std::vector<double>> &states, const std::vector<double> &times) {
         if (states.size() != times.size()) {
             throw states.size() - times.size();
         }
@@ -21,6 +26,23 @@ namespace Utilities {
         }
 
         return mapped_states;
+    }
+
+    std::vector<std::vector<double>> combineStateWithTimeVector(const std::vector<std::vector<double>> &states, const std::vector<double> &times) {
+        if (states.size() != times.size()) {
+            throw states.size() - times.size();
+        }
+
+        std::vector<std::vector<double>> joined_vector;
+
+        for (std::size_t i = 0; i < states.size(); i++) {
+            std::vector<double> joined_line = {times[i]};
+            joined_line.insert(joined_line.end(), states[i].begin(), states[i].end());
+
+            joined_vector.push_back(joined_line);
+        }
+
+        return joined_vector;
     }
 
     IntegralObserver::IntegralObserver(std::vector<std::vector<double>> &states, std::vector<double> &times): m_states(states), m_times(times) {}
@@ -46,5 +68,17 @@ namespace Utilities {
 
         m_states.push_back(x);
         m_times.push_back(t);
+    }
+
+    void writeCsv(const std::vector<std::string> &header, const std::vector<std::vector<double>> &values, const std::filesystem::path &file_path) {
+        fmt::ostream file = fmt::output_file(file_path.string());
+
+        file.print("{}\n", fmt::join(header, ","));
+
+        for (auto line : values) {
+            file.print("{}\n", fmt::join(line, ","));
+        }
+
+        file.close();
     }
 }  // namespace Utilities
