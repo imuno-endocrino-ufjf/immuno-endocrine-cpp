@@ -13,6 +13,7 @@ int main(int argc, char *argv[]) {
     std::filesystem::path input_path;
     int days = 36500;
     bool plot = true;
+    bool csv = true;
 
 #ifndef NDEBUG
     fmt::print(fg(fmt::color::dark_golden_rod) | fmt::emphasis::bold, "Profiling enabled!\n\n");
@@ -69,6 +70,17 @@ int main(int argc, char *argv[]) {
                 )
             ) {
                 plot = false;
+            } else if (
+                auto no_csv_return = Utilities::readParameter<bool>(
+                    {"--no-csv"},
+                    argv[i],
+                    (char *) "1",
+                    [](std::string input) -> bool {
+                        return true;
+                    }
+                )
+            ) {
+                csv = false;
             } else {
                 fmt::print(fg(fmt::color::dark_red), "Unknown parameter: {}\n", argv[i]);
                 exit(1);
@@ -88,6 +100,8 @@ int main(int argc, char *argv[]) {
     }
 
     cortisol_cytokines_simulation.setPlot(plot);
+
+    cortisol_cytokines_simulation.setCsv(csv);
 
     cortisol_cytokines_simulation.startSimulation();
 
