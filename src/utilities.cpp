@@ -37,7 +37,7 @@ namespace Utilities {
 
         for (std::size_t i = 0; i < states.size(); i++) {
             std::vector<double> joined_line = {times[i]};
-            joined_line.append_range(states[i]);
+            joined_line.insert(joined_line.end(), states[i].begin(), states[i].end());
 
             joined_vector.push_back(joined_line);
         }
