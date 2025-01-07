@@ -68,7 +68,7 @@ class CortisolCytokines {
         void setDefaultParameters();
         void printParameters();
         void operator()(const std::vector<double> &x, std::vector<double> &dxdt, const double T) const;
-        static void plotResults(const std::vector<std::vector<double>> &states, const std::vector<double> &times, int current_loop);
+        static void plotResults(const std::vector<std::vector<double>> &states, const std::vector<double> &times);
 };
 
 #endif

@@ -248,7 +248,7 @@ void CortisolCytokines::operator()(const std::vector<double> &x, std::vector<dou
     dxdt[7] = DCORDT;
 }
 
-void CortisolCytokines::plotResults(const std::vector<std::vector<double>> &states, const std::vector<double> &times, int current_loop) {
+void CortisolCytokines::plotResults(const std::vector<std::vector<double>> &states, const std::vector<double> &times) {
     const std::array<std::string, 8> FILE_NAMES = {"antigen", "active_macrophage", "resting_macrophage", "il10", "il6", "il8", "tnf", "cortisol"};
     std::array<std::vector<double>, 8> separated_states;
 
@@ -267,7 +267,7 @@ void CortisolCytokines::plotResults(const std::vector<std::vector<double>> &stat
         auto axes = figure->current_axes();
         axes->plot(times, separated_states[i]);
 
-        const std::filesystem::path FILE_PATH = "output/" + FILE_NAMES[i] + "_" + std::to_string(current_loop) + ".png";
+        const std::filesystem::path FILE_PATH = "output/" + FILE_NAMES[i] + ".png";
         figure->save(FILE_PATH.string());
 
 #ifndef NDEBUG
