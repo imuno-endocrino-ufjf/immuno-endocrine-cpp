@@ -183,7 +183,7 @@ jobs:
 
       - name: Run binary (Windows)
         if: matrix.os == 'windows-latest'
-        run: .\immuno-endocrine-cpp-windows-latest-${{ matrix.build_type }}.exe
+        run: .\immuno-endocrine-cpp-windows-latest-${{ matrix.build_type }}.exe --no-plot
 
       - name: Upload results
         uses: actions/upload-artifact@v4
