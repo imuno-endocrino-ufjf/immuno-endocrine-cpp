@@ -73,7 +73,7 @@ void CortisolCytokinesSimulation::startSimulation() {
         auto plotting_start = std::chrono::high_resolution_clock::now();
 #endif
 
-        CortisolCytokines::plotResults(states, times, 0);
+        CortisolCytokines::plotResults(states, times);
 
 #ifndef NDEBUG
         auto plotting_end = std::chrono::high_resolution_clock::now();
