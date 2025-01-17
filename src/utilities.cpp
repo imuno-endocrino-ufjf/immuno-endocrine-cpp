@@ -45,6 +45,16 @@ namespace Utilities {
         return joined_vector;
     }
 
+    std::map<double, double> vectorToMap(std::vector<std::vector<double>> vector) {
+        std::map<double, double> map;
+
+        for (auto values : vector) {
+            map.insert(std::pair(values[0], values[1]));
+        }
+
+        return map;
+    }
+
     IntegralObserver::IntegralObserver(std::vector<std::vector<double>> &states, std::vector<double> &times): m_states(states), m_times(times) {}
 
     void IntegralObserver::operator()(const std::vector<double> &x, double t) {
