@@ -1,19 +1,21 @@
 #include "cortisol_cytokines_simulation.hpp"
 
 #include <fmt/base.h>
+#include <fmt/ranges.h>
 
+#include <boost/numeric/odeint/integrate/integrate.hpp>
+#include <chrono>
 #include <filesystem>
+#include <fstream>
+#include <nlohmann/json.hpp>
+
+#include "cortisol_cytokines.hpp"
+#include "utilities.hpp"
 
 #ifndef NDEBUG
     #include <fmt/chrono.h>
     #include <fmt/color.h>
 #endif
-
-#include <boost/numeric/odeint/integrate/integrate.hpp>
-#include <chrono>
-
-#include "cortisol_cytokines.hpp"
-#include "utilities.hpp"
 
 CortisolCytokinesSimulation::CortisolCytokinesSimulation(std::filesystem::path input_path, int days, bool plot, bool csv) {
     this->input_path = input_path;
@@ -40,11 +42,44 @@ void CortisolCytokinesSimulation::setCsv(bool csv) {
 
 void CortisolCytokinesSimulation::startSimulation() {
     CortisolCytokines cortisol_cytokines;
-    if (!input_path.empty()) {
-        cortisol_cytokines = CortisolCytokines(input_path);
-    }
+    std::vector<double> x = {2, 5, 10, 0.7, 0, 0, 0.17, 2.32};
 
-    std::vector<double> x = {2, 5, 10, 0, 0, 0.7, 0.17, 2.32};
+    if (!input_path.empty()) {
+        try {
+            std::ifstream file_stream(input_path);
+            auto json = nlohmann::json::parse(file_stream);
+            auto initial_conditions = json.at("initial_conditions");
+
+            x = {
+                initial_conditions.at("antigens"),
+                initial_conditions.at("active_macrophages"),
+                initial_conditions.at("resting_macrophages"),
+                initial_conditions.at("il-10"),
+                initial_conditions.at("il-6"),
+                initial_conditions.at("il-8"),
+                initial_conditions.at("tnf-alpha"),
+                initial_conditions.at("cortisol")
+            };
+
+            cortisol_cytokines.setParameters(json);
+        } catch (const nlohmann::json::parse_error &exception) {
+            fmt::print(stderr, "Error reading from file {}.\n", input_path.string());
+
+#ifndef NDEBUG
+            fmt::print(fg(fmt::color::dark_golden_rod) | fmt::emphasis::bold, "{}", exception.what());
+#endif
+
+            exit(512);
+        } catch (const nlohmann::json::basic_json::out_of_range &exception) {
+            fmt::print(stderr, "Error reading attribute from file.\n");
+
+#ifndef NDEBUG
+            fmt::print(fg(fmt::color::dark_golden_rod) | fmt::emphasis::bold, "{}", exception.what());
+#endif
+
+            exit(513);
+        }
+    }
 
     std::vector<std::vector<double>> states;
     std::vector<double> times;

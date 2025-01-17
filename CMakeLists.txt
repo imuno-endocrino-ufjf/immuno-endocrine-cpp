@@ -10,6 +10,7 @@ add_executable(immuno-endocrine-cpp
     src/main.cpp
     src/utilities.cpp
     src/cortisol_cytokines.cpp
+    src/cortisol_cytokines_values.cpp
     src/cortisol_cytokines_simulation.cpp
 )
 target_include_directories(immuno-endocrine-cpp PUBLIC "${PROJECT_SOURCE_DIR}/include")
