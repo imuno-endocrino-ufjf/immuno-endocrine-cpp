@@ -6,8 +6,8 @@
     "active_macrophages": 5,
     "resting_macrophages": 10,
     "il-6": 0,
-    "il-8": 0.7,
-    "il-10": 0,
+    "il-8": 0,
+    "il-10": 0.7,
     "tnf-alpha": 0.17,
     "cortisol": 2.32
   },
