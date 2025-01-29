@@ -1,0 +1,271 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/configuration.schema.json",
+  "title": "Cortisol Cytokine Simulation Configuration",
+  "description": "Defines the cortisol cytokine simulation configuration options and parameters",
+  "type": "object",
+  "properties": {
+    "simulation_duration": {
+      "type": "integer"
+    },
+    "initial_conditions": {
+      "type": "object",
+      "properties": {
+        "antigens": {
+          "type": "number"
+        },
+        "active_macrophages": {
+          "type": "number"
+        },
+        "resting_macrophages": {
+          "type": "number"
+        },
+        "il-10": {
+          "type": "number"
+        },
+        "il-8": {
+          "type": "number"
+        },
+        "il-6": {
+          "type": "number"
+        },
+        "tnf-alpha": {
+          "type": "number"
+        },
+        "cortisol": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "antigens",
+        "active_macrophages",
+        "resting_macrophages",
+        "il-10",
+        "il-8",
+        "il-6",
+        "tnf-alpha",
+        "cortisol"
+      ]
+    },
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "k_6": {
+          "type": "number"
+        },
+        "k_6M": {
+          "type": "number"
+        },
+        "k_6TNF": {
+          "type": "number"
+        },
+        "k_8": {
+          "type": "number"
+        },
+        "k_8M": {
+          "type": "number"
+        },
+        "k_8TNF": {
+          "type": "number"
+        },
+        "k_10": {
+          "type": "number"
+        },
+        "k_10M": {
+          "type": "number"
+        },
+        "k_TNF": {
+          "type": "number"
+        },
+        "k_TNFM": {
+          "type": "number"
+        },
+        "k_MTNF": {
+          "type": "number"
+        },
+        "q_IL6": {
+          "type": "number"
+        },
+        "q_IL8": {
+          "type": "number"
+        },
+        "q_IL10": {
+          "type": "number"
+        },
+        "q_TNF": {
+          "type": "number"
+        },
+        "n_106": {
+          "type": "number"
+        },
+        "n_610": {
+          "type": "number"
+        },
+        "n_66": {
+          "type": "number"
+        },
+        "n_6TNF": {
+          "type": "number"
+        },
+        "n_TNF6": {
+          "type": "number"
+        },
+        "n_810": {
+          "type": "number"
+        },
+        "n_8TNF": {
+          "type": "number"
+        },
+        "n_M10": {
+          "type": "number"
+        },
+        "n_TNF10": {
+          "type": "number"
+        },
+        "n_MTNF": {
+          "type": "number"
+        },
+        "h_106": {
+          "type": "number"
+        },
+        "h_610": {
+          "type": "number"
+        },
+        "h_66": {
+          "type": "number"
+        },
+        "h_6TNF": {
+          "type": "number"
+        },
+        "h_TNF6": {
+          "type": "number"
+        },
+        "h_810": {
+          "type": "number"
+        },
+        "h_8TNF": {
+          "type": "number"
+        },
+        "h_M10": {
+          "type": "number"
+        },
+        "h_TNF10": {
+          "type": "number"
+        },
+        "h_MTNF": {
+          "type": "number"
+        },
+        "k_106": {
+          "type": "number"
+        },
+        "ktc": {
+          "type": "number"
+        },
+        "kmct": {
+          "type": "number"
+        },
+        "kmtc": {
+          "type": "number"
+        },
+        "kcd": {
+          "type": "number"
+        },
+        "klt": {
+          "type": "number"
+        },
+        "klt6": {
+          "type": "number"
+        },
+        "Cmax": {
+          "type": "number"
+        },
+        "beta_A": {
+          "type": "number"
+        },
+        "k_A": {
+          "type": "number"
+        },
+        "m_A": {
+          "type": "number"
+        },
+        "MR_max": {
+          "type": "number"
+        },
+        "k_MA": {
+          "type": "number"
+        },
+        "k_MR": {
+          "type": "number"
+        },
+        "k_M": {
+          "type": "number"
+        },
+        "glucose": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {
+              "type": "number"
+            }
+          }
+        }
+      },
+      "required": [
+        "k_6",
+        "k_6M",
+        "k_6TNF",
+        "k_8",
+        "k_8M",
+        "k_8TNF",
+        "k_10",
+        "k_10M",
+        "k_TNF",
+        "k_TNFM",
+        "k_MTNF",
+        "q_IL6",
+        "q_IL8",
+        "q_IL10",
+        "q_TNF",
+        "n_106",
+        "n_610",
+        "n_66",
+        "n_6TNF",
+        "n_TNF6",
+        "n_810",
+        "n_8TNF",
+        "n_M10",
+        "n_TNF10",
+        "n_MTNF",
+        "h_106",
+        "h_610",
+        "h_66",
+        "h_6TNF",
+        "h_TNF6",
+        "h_810",
+        "h_8TNF",
+        "h_M10",
+        "h_TNF10",
+        "h_MTNF",
+        "k_106",
+        "ktc",
+        "kmct",
+        "kmtc",
+        "kcd",
+        "klt",
+        "klt6",
+        "Cmax",
+        "beta_A",
+        "k_A",
+        "m_A",
+        "MR_max",
+        "k_MA",
+        "k_MR",
+        "k_M",
+        "glucose"
+      ]
+    }
+  },
+  "required": ["initial_conditions", "parameters"]
+}
