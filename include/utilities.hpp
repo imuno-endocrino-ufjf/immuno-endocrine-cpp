@@ -2,9 +2,9 @@
 #define __UTILITIES_HPP__
 
 #include <fmt/base.h>
+
 #include <cmath>
 #include <filesystem>
-#include <iostream>
 #include <iterator>
 #include <map>
 #include <optional>
@@ -36,48 +36,53 @@ namespace Utilities {
             inline Type find(double key) {
                 typedef typename std::map<double, Type>::iterator MapType;
 
-                MapType begin = this->map.begin();
+                if (this->last_key <= key) {
+                    auto previous_loop_position = this->last_position;
+                    auto current_loop_position = std::next(previous_loop_position);
 
-                if (last_key <= key) {
-                    auto next_to_last_position = std::next(this->last_position);
+                    while (true) {
+                        if (
+                            (current_loop_position == this->map.end()) ||
+                            (std::fabs(previous_loop_position->first - key) < std::fabs(current_loop_position->first - key))
+                        ) {
+                            this->last_key = key;
+                            this->last_position = previous_loop_position;
 
-
-                    if (next_to_last_position == this->map.end()) {
-                        this->last_key = key;
-                        return last_position->second;
-                    }
-
-                    if (std::fabs(last_position->first - key) < std::fabs(next_to_last_position->first - key)) {
-                        this->last_key = key;
-                        return last_position->second;
-                    } else {
-                        this->last_key = key;
-                        this->last_position = next_to_last_position;
-                        return next_to_last_position->second;
+                            return previous_loop_position->second;
+                        } else {
+                            previous_loop_position = current_loop_position;
+                            current_loop_position = std::next(current_loop_position);
+                        }
                     }
                 } else {
-                    if (last_position == begin) {
-                        return begin->second;
-                    }
-
-                    MapType previous_to_last_position = std::prev(this->last_position);
+                    auto previous_loop_position = this->last_position;
+                    auto current_loop_position = std::prev(previous_loop_position);
 
                     if (
-                        (std::fabs(begin->first - key) < std::fabs(previous_to_last_position->first - key)) &&
-                        (std::fabs(begin->first - key) < std::fabs(last_position->first - key))
+                        (std::fabs(this->map.begin()->first - key) < std::fabs(previous_loop_position->first - key)) &&
+                        (std::fabs(this->map.begin()->first - key) < std::fabs(current_loop_position->first - key))
                     ) {
                         this->last_key = key;
-                        this->last_position = begin;
-                        return begin->second;
-                    } else if (
-                        std::fabs(last_position->first - key) < std::fabs(previous_to_last_position->first - key)
-                    ) {
-                        this->last_key = key;
-                        return last_position->second;
-                    } else {
-                        this->last_key = key;
-                        this->last_position = previous_to_last_position;
-                        return previous_to_last_position->second;
+                        this->last_position = this->map.begin();
+
+                        return this->map.begin()->second;
+                    }
+
+                    while (true) {
+                        if (std::fabs(previous_loop_position->first - key) < std::fabs(current_loop_position->first - key)) {
+                            this->last_key = key;
+                            this->last_position = previous_loop_position;
+
+                            return previous_loop_position->second;
+                        } else if (current_loop_position == this->map.begin()) {
+                            this->last_key = key;
+                            this->last_position = current_loop_position;
+
+                            return current_loop_position->second;
+                        } else {
+                            previous_loop_position = current_loop_position;
+                            current_loop_position = std::prev(current_loop_position);
+                        }
                     }
                 }
 
