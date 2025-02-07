@@ -79,6 +79,8 @@ void CortisolCytokinesSimulation::startSimulation() {
 
             exit(513);
         }
+    } else {
+        cortisol_cytokines.setDefaultParameters();
     }
 
     std::vector<std::vector<double>> states;
@@ -90,7 +92,7 @@ void CortisolCytokinesSimulation::startSimulation() {
     auto simulation_start = std::chrono::high_resolution_clock::now();
 #endif
 
-    boost::numeric::odeint::integrate(cortisol_cytokines, x, 0.0, double(days), 0.001, Utilities::IntegralObserver(states, times));
+    boost::numeric::odeint::integrate(cortisol_cytokines, x, 0.0, double(days), 0.0001, Utilities::IntegralObserver(states, times));
 
 #ifndef NDEBUG
     auto simulation_end = std::chrono::high_resolution_clock::now();

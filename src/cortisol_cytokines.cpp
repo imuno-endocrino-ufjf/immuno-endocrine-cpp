@@ -19,10 +19,12 @@
 
 void CortisolCytokines::setParameters(const nlohmann::basic_json<> &input_path) {
     CortisolCytokines::values.setValues(input_path);
+    CortisolCytokines::get_closest_value.setValues(CortisolCytokines::values.gluc);
 }
 
 void CortisolCytokines::setDefaultParameters() {
     CortisolCytokines::values.setDefaultValues();
+    CortisolCytokines::get_closest_value.setValues(CortisolCytokines::values.gluc);
 }
 
 void CortisolCytokines::operator()(const std::vector<double> &x, std::vector<double> &dxdt, const double T) const {
@@ -108,7 +110,7 @@ void CortisolCytokines::operator()(const std::vector<double> &x, std::vector<dou
 
     const double DCORDT = CortisolCytokines::values.ktc *
                               (TNF / (TNF + CortisolCytokines::values.kmtc)) *
-                              (CortisolCytokines::values.cmax - COR) * Utilities::findClosestValue<double>(CortisolCytokines::values.gluc, T - int(T)) -
+                              (CortisolCytokines::values.cmax - COR) * CortisolCytokines::get_closest_value.find(T - int(T)) -
                           CortisolCytokines::values.kcd * COR;
 
     dxdt[0] = DADT;

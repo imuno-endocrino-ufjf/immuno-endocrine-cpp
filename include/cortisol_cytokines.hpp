@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "cortisol_cytokines_values.hpp"
+#include "utilities.hpp"
 
 class CortisolCytokines {
     private:
@@ -17,6 +18,9 @@ class CortisolCytokines {
         // to prevent this we store them on a separate class that is statically defined inline
         // and thus isn't removed from memory
         static inline CortisolCytokinesValues values = CortisolCytokinesValues();
+
+
+        static inline Utilities::GetClosestValue<double> get_closest_value = Utilities::GetClosestValue<double>();
 
     public:
         inline CortisolCytokines(){};
