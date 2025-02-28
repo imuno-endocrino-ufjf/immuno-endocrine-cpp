@@ -37,7 +37,7 @@ int main(int argc, char *argv[]) {
                         std::filesystem::path input_path = input;
 
                         if (!std::filesystem::is_regular_file(input_path)) {
-                            fmt::print("Invalid file path: {}\n", input);
+                            fmt::print(stderr, fg(fmt::color::dark_red) | fmt::emphasis::bold, "Invalid file path: {}\n", input);
                             exit(3);
                         }
 
@@ -56,7 +56,7 @@ int main(int argc, char *argv[]) {
                         int days = std::stoi(input);
 
                         if (days <= 0) {
-                            fmt::print(fg(fmt::color::dark_red), "Invalid amount of days: {}\n", days);
+                            fmt::print(stderr, fg(fmt::color::dark_red) | fmt::emphasis::bold, "Invalid amount of days: {}\n", days);
                             exit(3);
                         }
 
@@ -89,11 +89,11 @@ int main(int argc, char *argv[]) {
             ) {
                 csv = false;
             } else {
-                fmt::print(fg(fmt::color::dark_red), "Unknown parameter: {}\n", argv[i]);
+                fmt::print(stderr, fg(fmt::color::dark_red) | fmt::emphasis::bold, "Unknown parameter: {}\n", argv[i]);
                 exit(1);
             }
         } catch (std::invalid_argument exception) {
-            fmt::print(fg(fmt::color::dark_red), "Missing value for paramter: {}\n", argv[i]);
+            fmt::print(stderr, fg(fmt::color::dark_red) | fmt::emphasis::bold, "Missing value for paramter: {}\n", argv[i]);
             exit(2);
         }
     }
@@ -101,14 +101,12 @@ int main(int argc, char *argv[]) {
     CortisolCytokinesSimulation cortisol_cytokines_simulation;
 
     cortisol_cytokines_simulation.setDays(days);
+    cortisol_cytokines_simulation.setPlot(plot);
+    cortisol_cytokines_simulation.setCsv(csv);
 
     if (!input_path.empty()) {
         cortisol_cytokines_simulation.setInputPath(input_path);
     }
-
-    cortisol_cytokines_simulation.setPlot(plot);
-
-    cortisol_cytokines_simulation.setCsv(csv);
 
     cortisol_cytokines_simulation.startSimulation();
 
