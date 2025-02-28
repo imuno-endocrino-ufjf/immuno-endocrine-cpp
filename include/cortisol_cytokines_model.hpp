@@ -1,12 +1,13 @@
-#ifndef __CORTISOL_CYTOKINES_HPP__
-#define __CORTISOL_CYTOKINES_HPP__
+#ifndef __CORTISOL_CYTOKINES_MODEL_HPP__
+#define __CORTISOL_CYTOKINES_MODEL_HPP__
 
 #include <nlohmann/json.hpp>
 #include <vector>
 
 #include "cortisol_cytokines_values.hpp"
+#include "utilities.hpp"
 
-class CortisolCytokines {
+class CortisolCytokinesModel {
     private:
         // boost's odeint integration function constantly destroys and recreates the object,
         // as such, storing the parameters as class members will frequently cause them to be
@@ -18,9 +19,11 @@ class CortisolCytokines {
         // and thus isn't removed from memory
         static inline CortisolCytokinesValues values = CortisolCytokinesValues();
 
+        static inline Utilities::GetClosestValue<double> get_closest_value = Utilities::GetClosestValue<double>();
+
     public:
-        inline CortisolCytokines(){};
-        void setParameters(const nlohmann::basic_json<> &input_path);
+        inline CortisolCytokinesModel(){};
+        void setParameters(const nlohmann::basic_json<> &json_file);
         void setDefaultParameters();
         void operator()(const std::vector<double> &x, std::vector<double> &dxdt, const double T) const;
         static void plotResults(const std::vector<std::vector<double>> &states, const std::vector<double> &times);

@@ -9,7 +9,7 @@
 #include <fstream>
 #include <nlohmann/json.hpp>
 
-#include "cortisol_cytokines.hpp"
+#include "cortisol_cytokines_model.hpp"
 #include "utilities.hpp"
 
 #ifndef NDEBUG
@@ -40,30 +40,30 @@ void CortisolCytokinesSimulation::setCsv(bool csv) {
     this->csv = csv;
 }
 
-void CortisolCytokinesSimulation::startSimulation() {
-    CortisolCytokines cortisol_cytokines;
-    std::vector<double> x = {2, 5, 10, 0.7, 0, 0, 0.17, 2.32};
+void CortisolCytokinesSimulation::startSimulation() const {
+    CortisolCytokinesModel cortisol_cytokines_model;
+    std::vector<double> initial_conditions = {2, 5, 10, 0.7, 0, 0, 0.17, 2.32};
 
-    if (!input_path.empty()) {
+    if (!this->input_path.empty()) {
         try {
             std::ifstream file_stream(input_path);
-            auto json = nlohmann::json::parse(file_stream);
-            auto initial_conditions = json.at("initial_conditions");
+            auto json_file = nlohmann::json::parse(file_stream);
+            auto custom_initial_conditions = json_file.at("initial_conditions");
 
-            x = {
-                initial_conditions.at("antigens"),
-                initial_conditions.at("active_macrophages"),
-                initial_conditions.at("resting_macrophages"),
-                initial_conditions.at("il-10"),
-                initial_conditions.at("il-6"),
-                initial_conditions.at("il-8"),
-                initial_conditions.at("tnf-alpha"),
-                initial_conditions.at("cortisol")
+            initial_conditions = {
+                custom_initial_conditions.at("antigens"),
+                custom_initial_conditions.at("active_macrophages"),
+                custom_initial_conditions.at("resting_macrophages"),
+                custom_initial_conditions.at("il-10"),
+                custom_initial_conditions.at("il-6"),
+                custom_initial_conditions.at("il-8"),
+                custom_initial_conditions.at("tnf-alpha"),
+                custom_initial_conditions.at("cortisol")
             };
 
-            cortisol_cytokines.setParameters(json);
+            cortisol_cytokines_model.setParameters(json_file);
         } catch (const nlohmann::json::parse_error &exception) {
-            fmt::print(stderr, "Error reading from file {}.\n", input_path.string());
+            fmt::print(stderr, fg(fmt::color::dark_red) | fmt::emphasis::bold, "Error reading from file {}.\n", input_path.string());
 
 #ifndef NDEBUG
             fmt::print(fg(fmt::color::dark_golden_rod) | fmt::emphasis::bold, "{}", exception.what());
@@ -71,7 +71,7 @@ void CortisolCytokinesSimulation::startSimulation() {
 
             exit(512);
         } catch (const nlohmann::json::basic_json::out_of_range &exception) {
-            fmt::print(stderr, "Error reading attribute from file.\n");
+            fmt::print(stderr, fg(fmt::color::dark_red) | fmt::emphasis::bold, "Error reading attribute from file.\n");
 
 #ifndef NDEBUG
             fmt::print(fg(fmt::color::dark_golden_rod) | fmt::emphasis::bold, "{}", exception.what());
@@ -79,6 +79,8 @@ void CortisolCytokinesSimulation::startSimulation() {
 
             exit(513);
         }
+    } else {
+        cortisol_cytokines_model.setDefaultParameters();
     }
 
     std::vector<std::vector<double>> states;
@@ -90,7 +92,7 @@ void CortisolCytokinesSimulation::startSimulation() {
     auto simulation_start = std::chrono::high_resolution_clock::now();
 #endif
 
-    boost::numeric::odeint::integrate(cortisol_cytokines, x, 0.0, double(days), 0.001, Utilities::IntegralObserver(states, times));
+    boost::numeric::odeint::integrate(cortisol_cytokines_model, initial_conditions, 0.0, double(days), 0.0001, Utilities::IntegralObserver(states, times));
 
 #ifndef NDEBUG
     auto simulation_end = std::chrono::high_resolution_clock::now();
@@ -101,14 +103,14 @@ void CortisolCytokinesSimulation::startSimulation() {
 
     fmt::print("Simulation done.\n");
 
-    if (plot) {
+    if (this->plot) {
         fmt::print("\nStarting plotting.\n");
 
 #ifndef NDEBUG
         auto plotting_start = std::chrono::high_resolution_clock::now();
 #endif
 
-        CortisolCytokines::plotResults(states, times);
+        CortisolCytokinesModel::plotResults(states, times);
 
 #ifndef NDEBUG
         auto plotting_end = std::chrono::high_resolution_clock::now();
@@ -120,7 +122,7 @@ void CortisolCytokinesSimulation::startSimulation() {
         fmt::print("Plotting done.\n");
     }
 
-    if (csv) {
+    if (this->csv) {
         fmt::print("\nStarting CSV write.\n");
 
 #ifndef NDEBUG

@@ -8,7 +8,7 @@ class CortisolCytokinesValues {
     public:
         inline CortisolCytokinesValues(){};
 
-        void setValues(const nlohmann::basic_json<> &json);
+        void setValues(const nlohmann::basic_json<> &json_file);
         void setDefaultValues();
 
         double k_6 = 4.64;
