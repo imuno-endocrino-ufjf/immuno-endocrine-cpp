@@ -86,7 +86,7 @@ For nix users, a shell.nix is provided that includes Gnuplot and all of this pro
 
 ==== Windows
 
-Download and install the latest from https://sourceforge.net/projects/gnuplot/files/gnuplot/[here].
+Download and install the latest gnuplot release from https://sourceforge.net/projects/gnuplot/files/gnuplot/[here].
 
 == Building
 
