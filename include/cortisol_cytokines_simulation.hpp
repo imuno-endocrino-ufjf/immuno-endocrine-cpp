@@ -18,7 +18,7 @@ class CortisolCytokinesSimulation {
         void setInputPath(std::filesystem::path input_path);
         void setPlot(bool plot);
         void setCsv(bool csv);
-        void startSimulation();
+        void startSimulation() const;
 };
 
 #endif

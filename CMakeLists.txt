@@ -10,7 +10,7 @@ set(CMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES ${CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTOR
 add_executable(immuno-endocrine-cpp
     src/main.cpp
     src/utilities.cpp
-    src/cortisol_cytokines.cpp
+    src/cortisol_cytokines_model.cpp
     src/cortisol_cytokines_values.cpp
     src/cortisol_cytokines_simulation.cpp
 )

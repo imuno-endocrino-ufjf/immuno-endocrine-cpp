@@ -4,11 +4,12 @@
 #include <fmt/ranges.h>
 
 #include <cstdio>
+
 #include "utilities.hpp"
 
-void CortisolCytokinesValues::setValues(const nlohmann::basic_json<> &json) {
+void CortisolCytokinesValues::setValues(const nlohmann::basic_json<> &json_file) {
     try {
-        auto parameters = json.at("parameters");
+        auto parameters = json_file.at("parameters");
 
         k_6 = parameters.at("k_6");
         k_6m = parameters.at("k_6M");
