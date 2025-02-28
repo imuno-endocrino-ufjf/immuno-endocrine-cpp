@@ -8,6 +8,86 @@ Immuno Endocrine C{plus}{plus} is a C{plus}{plus} implementation of the models o
 
 toc::[]
 
+== Usage
+
+The latest version will be compiled and available to download in the https://github.com/imuno-endocrino-ufjf/immuno-endocrine-cpp/releases/latest[releases section], for instructions on how to compile and build your own version, please see the instructions <<Building,down below>>.
+
+To run the compiled version, open a terminal window, navigate to the folder where the download is located and run it with:
+
+[,bash]
+----
+./immuno-endocrine-cpp-[your operating system]-[debug or release] <<Arguments>>
+----
+
+[NOTE]
+====
+On macOS and Linux you might be required to mark the program as a valid executable using:
+
+[,bash]
+----
+chmod +x immuno-endocrine-cpp-[your operating system]-[debug or release]
+----
+
+====
+
+An output folder will be created on the program's working directory containing, by default, a CSV file with the raw results, and plots for each of the model's outputs.
+
+[NOTE]
+====
+Plot generation required Gnuplot to be installed on the host system, for instructions go to <<Plotting, plotting>>
+====
+
+=== Arguments
+
+Currently, the simulation can accept 4 different arguments, those being:
+
+[cols="5*", options="header"]
+|==========
+ | Argument   | Extra arguments   | Description                                                                                                                                                                                                                                                                                                                                                2+| Example
+m| --no-csv   | None              | A CSV file with the outputs won't be written                                                                                                                                                                                                                                                                                                              2+m| ./immuno-endocrine-cpp-macos-release --no-csv
+m| --no-plot  | None              | Plot's of the simulation results won't be generated                                                                                                                                                                                                                                                                                                       2+m| ./immuno-endocrine-cpp-macos-release --no-plot
+m| -d --days  | A number          | The number of days the simulation should be run for                                                                                                                                                                                                                                                                                                       2+m| ./immuno-endocrine-cpp-macos-release -d 3650
+m| -i --input | A file path       | A path to a properly formated JSON file containing custom simulation parameters, a https://github.com/imuno-endocrino-ufjf/immuno-endocrine-cpp/blob/main/configuration.schema.json[JSON schema] and https://github.com/imuno-endocrino-ufjf/immuno-endocrine-cpp/blob/main/configuration.sample.json[sample] file can be downloaded from this repository 2+m| ./immuno-endocrine-cpp-macos-release -i configuration.sample.json
+|==========
+
+=== Custom Parameters
+
+To use custom model parameters a properly formatted JSON file must be provided to the program using the `-i` argument. A https://github.com/imuno-endocrino-ufjf/immuno-endocrine-cpp/blob/main/configuration.schema.json[JSON schema] and https://github.com/imuno-endocrino-ufjf/immuno-endocrine-cpp/blob/main/configuration.sample.json[sample] file can be downloaded from this repository.
+
+=== Plotting
+
+To generate plots for the results Gnuplot must be installed on the host system, please refer to the instructions below to install it on your respective operating system.
+
+==== macOS
+
+To install Gnuplot on macOS use homebrew:
+
+[,bash]
+----
+brew install --cask gnuplot
+----
+
+==== Linux
+
+To install Gnuplot on Linux use your respective distribution's package manager, some examples are listed below:
+
+[cols="4*"]
+|==========
+| Ubuntu     3+m| sudo apt install gnuplot
+| Fedora     3+m| sudo dnf install gnuplot
+| Arch Linux 3+m| sudo pacman -S gnuplot
+| Nix        3+m| nix-shell -p gnuplot
+|==========
+
+[NOTE]
+====
+For nix users, a shell.nix is provided that includes Gnuplot and all of this project's build depedencies
+====
+
+==== Windows
+
+Download and install the latest from https://sourceforge.net/projects/gnuplot/files/gnuplot/[here].
+
 == Building
 
 This project is built with `cmake` and uses `vcpkg` as it's package manager.
