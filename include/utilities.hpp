@@ -88,8 +88,7 @@ namespace Utilities {
             }
     };
 
-    std::map<double, double>
-        vectorToMap(std::vector<std::vector<double>> vector);
+    std::map<double, double> vectorToMap(std::vector<std::vector<double>> vector);
 
     template<class Type>
     inline std::optional<Type> readParameter(
@@ -125,6 +124,7 @@ namespace Utilities {
             std::vector<double> &m_times;
 
 #ifndef NDEBUG
+            // auto keyword can't be used for class members
             std::chrono::time_point<std::chrono::high_resolution_clock, std::chrono::duration<long int, std::ratio<1LL, 1000000000LL>>> previous_decade_time = std::chrono::high_resolution_clock::now();
 #endif
 
