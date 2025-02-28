@@ -1,6 +1,7 @@
 #include "cortisol_cytokines_simulation.hpp"
 
 #include <fmt/base.h>
+#include <fmt/color.h>
 #include <fmt/ranges.h>
 
 #include <boost/numeric/odeint/integrate/integrate.hpp>
