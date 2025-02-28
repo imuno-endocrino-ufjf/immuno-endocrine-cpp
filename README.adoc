@@ -34,7 +34,7 @@ An output folder will be created on the program's working directory containing, 
 
 [NOTE]
 ====
-Plot generation required Gnuplot to be installed on the host system, for instructions go to <<Plotting, plotting>>
+Plot generation requires Gnuplot to be installed on the host system, for instructions go to <<Plotting, plotting>>
 ====
 
 === Arguments
