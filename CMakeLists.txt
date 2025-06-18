@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.28)
-cmake_policy(SET CMP0167 OLD) # change this in the future when cmake 3.30 becomes more ubiquitous
+#cmake_policy(SET CMP0167 OLD) # change this in the future when cmake 3.30 becomes more ubiquitous
 project(immuno-endocrine-cpp VERSION 0.1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 23)
