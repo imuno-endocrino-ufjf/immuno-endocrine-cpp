@@ -1,4 +1,4 @@
-#include "database_operations.h"
+#include "database_operations.hpp"
 #include "sqlite3.h"
 #include <vector>
 #include <iostream>

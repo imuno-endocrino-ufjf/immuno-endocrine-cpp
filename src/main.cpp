@@ -19,7 +19,7 @@
 
 #include "cortisol_cytokines_simulation.hpp"
 #include "utilities.hpp"
-#include "database_operations.h"
+#include "database_operations.hpp"
 #include "sqlite3.h"
 
 int main(int argc, char *argv[]) {
@@ -114,7 +114,20 @@ int main(int argc, char *argv[]) {
         cortisol_cytokines_simulation.setInputPath(input_path);
     }
 
-    // Fazer aqui a parte de BD com as funções do SQLite
+    // SQLite
+
+    const char* database = "/home/getcomp/Documentos/Nova pasta/i-e/immuno-endocrine-cpp/src/database.db";
+    const char* json = "/home/getcomp/Documentos/Nova pasta/i-e/immuno-endocrine-cpp/src/params.json";
+
+    sqlite3* DB;
+
+    createDB(database);
+
+    createInputTable(database);
+    createModelTable(database);
+    createOutputTable(database);
+    createSimulationTable(database);
+    
 
     cortisol_cytokines_simulation.startSimulation();
 
