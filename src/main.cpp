@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
     fmt::print(fg(fmt::color::dark_golden_rod) | fmt::emphasis::bold, "Profiling enabled!\n\n");
 #endif
 
-    for (int i = 1; i < argc; i++) {
+    for (int i = 1; i < argc; i++) { // Configurar a simulação
         try {
             if (
                 auto input_path_return = Utilities::readParameter<std::filesystem::path>(
@@ -113,6 +113,8 @@ int main(int argc, char *argv[]) {
     if (!input_path.empty()) {
         cortisol_cytokines_simulation.setInputPath(input_path);
     }
+
+    // Fazer aqui a parte de BD com as funções do SQLite
 
     cortisol_cytokines_simulation.startSimulation();
 
