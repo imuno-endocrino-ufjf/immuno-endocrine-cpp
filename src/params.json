@@ -1,0 +1,10 @@
+{
+    "config": {
+        "model": "padrao",
+        "version": 1.0
+    },
+    "parameters": {
+        "data1": 36.5,
+        "data2": 120
+    }
+}

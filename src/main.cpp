@@ -12,9 +12,15 @@
 #include <stdexcept>
 #include <string>
 #include <vector>
+#include <iostream>
+#include <iomanip>
+#include <stdio.h>
+
 
 #include "cortisol_cytokines_simulation.hpp"
 #include "utilities.hpp"
+#include "database_operations.h"
+#include "sqlite3.h"
 
 int main(int argc, char *argv[]) {
     std::filesystem::path input_path;
