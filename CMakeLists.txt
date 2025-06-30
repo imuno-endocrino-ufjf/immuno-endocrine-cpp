@@ -7,12 +7,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD_INCLUDE_DIRECTORIES ${CMAKE_CXX_IMPLICIT_INCLUDE_DIRECTORIES})
 
-add_executable(immuno-endocrine-cpp
-    src/main.cpp
-    src/utilities.cpp
-    src/cortisol_cytokines_model.cpp
-    src/cortisol_cytokines_values.cpp
-    src/cortisol_cytokines_simulation.cpp
+file(GLOB SRC_FILES CONFIGURE_DEPENDS src/*.cpp)
+add_executable(immuno-endocrine-cpp ${SRC_FILES}
 )
 target_include_directories(immuno-endocrine-cpp PUBLIC "${PROJECT_SOURCE_DIR}/include")
 
@@ -37,3 +33,5 @@ target_link_libraries(immuno-endocrine-cpp PRIVATE fmt::fmt)
 
 find_package(nlohmann_json CONFIG REQUIRED)
 target_link_libraries(immuno-endocrine-cpp PRIVATE nlohmann_json::nlohmann_json)
+
+target_link_libraries(immuno-endocrine-cpp PRIVATE sqlite3)
