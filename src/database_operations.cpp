@@ -332,5 +332,18 @@ std::string hashParameters(const nlohmann::json& parameters){
 
 // Function to verify if the simulation already exists in the database
 bool simulationExists(sqlite3* db, const::string& parameters_hash, std::string& results_json_out){
+    const char*sql = "SELECT results_json FROM simlations WHERE parameters_hash = ?";
+    sqlite3_stmt* stmt;
+    bool found = false;
 
+    if(sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) == SQLITE_OK){
+        sqlite3_bind_text(stmt, 1, parameters_hash.c_str(), -1, SQLITE_STATIC);
+
+        if(sqlite3_step(stmt) == SQLITE_ROW){
+            results_json_out = reinterpret_cast<const char*>(sqlite3_column_text(stmt, 0));
+            found = true;
+        }
+    }
+    sqlite3_finalize(stmt);
+    return found;
 }
