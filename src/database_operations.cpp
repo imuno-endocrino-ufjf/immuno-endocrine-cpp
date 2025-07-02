@@ -123,24 +123,6 @@ int createSimulationTable(const char* s){
     return 0;
 }
 
-/*int insertInputData(const char* s, int inputId, const string& modelParam){
-    sqlite3* DB;
-    char* messageError;
-    int exit = sqlite3_open(s, &DB);
-
-    string sql = "INSERT INTO INPUT (INPUT_ID, MODEL_PARAMETERS) VALUES("
-        + to_string(inputId) + ", '" + modelParam + "');"; 
-    exit = sqlite3_exec(DB, sql.c_str(), nullptr, 0, &messageError);
-    if(exit != SQLITE_OK) {
-        cerr << "Error inserting into INPUT: " << messageError << endl;
-        sqlite3_free(messageError);
-    } else {
-        cout << "Record inserted into INPUT sucessfully" << endl;
-    }
-    sqlite3_close(DB);
-    return exit;
-}*/
-
 int insertInputData(const char* s, int inputId, const string& jsonFilePath) {
     sqlite3* db;
     char* errMsg = nullptr;
@@ -248,26 +230,6 @@ int insertSimulationData(const char* s, int simulationId, int outputId, int time
     }
     sqlite3_close(DB);
     return exit;
-}
-
-int insertGeneralData(const char* s) {
-    sqlite3* DB;
-    char* messageError;
-    int exit = sqlite3_open(s, &DB);
-
-    string sql("INSERT INTO INPUT (INPUT_ID, CORTISOL_EXP_PARAMETERS, SIMULATION_GENDER, INITIAL_CONDITIONS) VALUES(1, 'cortisolExp', 'F', 'initialConditions');"
-    "INSERT INTO MODEL (MODEL_ID, MODEL_DESCRIPTION, MODEL_VERSION) VALUES(1, 'modelDescription', 10);"
-    "INSERT INTO OUTPUT (OUTPUT_ID, MODEL_ID, INPUT_ID, RESULTS) VALUES(1, 1, 1, 'results');"
-    "INSERT INTO SIMULATION (SIMULATION_ID, OUTPUT_ID, TIME_DAYS, SIMULATION_STATUS) VALUES(1, 1, 365, 'simulation run');");
-
-    exit = sqlite3_exec(DB, sql.c_str(), nullptr, 0, &messageError);
-    if(exit != SQLITE_OK) {
-        cerr << "error insert" << endl;
-        sqlite3_free(messageError);
-    } else {
-        cout << "Records created sucessfully" << endl;
-    }
-    return 0;
 }
 
 struct PrintContext {
