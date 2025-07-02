@@ -5,6 +5,8 @@
 #include <iomanip>
 #include <fstream>
 #include <string>
+#include <fmt/base.h>
+#include <fmt/ranges.h>
 
 using namespace std;
 
@@ -289,4 +291,25 @@ int checkTableData(const char* s, const string& tableName) {
     
     sqlite3_close(DB);
     return exit;
+}
+
+// New table for simulation data storage
+void initializeDatabase(sqlite3* db){
+    const char* sql = R"(
+    CREATE TABLE IF NOT EXISTS simulations (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    param_hash TEXT UNIQUE,
+    parameters_json TEXT,
+    results_json TEXT
+    );
+    )";
+
+    char* err_msg = nullptr;
+    int rc = sqlite3_exec(db, sql, nullptr, nullptr, &err_msg);
+
+    if(rc != SQLITE_OK){
+        fmt::print(stderr, "Erro ao criar tabela: {}\n", err_msg);
+        sqlite3_free(err_msg);
+        exit(1);
+    }
 }

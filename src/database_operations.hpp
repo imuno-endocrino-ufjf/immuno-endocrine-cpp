@@ -17,7 +17,7 @@ int createSimulationTable(const char* s);
 
 //data insertion
 int insertInputData(const char* s, int inputId, const string& jsonFilePath);
-//int insertInputData(const char* s, int inputId, const string& modelParam);
+
 int insertModelData(const char* s, int modelId, const std::string& modelDescription, 
                    int modelVersion);
 int insertOutputData(const char* s, int outputId, int modelId, int inputId, 
@@ -28,5 +28,6 @@ int insertGeneralData(const char* s);
 
 int printTableData(void* data, int argCount, char** argVector, char** columnName);
 int checkTableData(const char* s, const string& tableName);
+void initializeDatabase(sqlite3* db);
 
 #endif // DATABASE_OPERATIONS_H
