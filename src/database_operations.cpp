@@ -7,6 +7,9 @@
 #include <string>
 #include <fmt/base.h>
 #include <fmt/ranges.h>
+#include <nlohmann/json.hpp>
+#include <sstream>
+#include <openssl/sha.h>
 
 using namespace std;
 
@@ -312,4 +315,22 @@ void initializeDatabase(sqlite3* db){
         sqlite3_free(err_msg);
         exit(1);
     }
+}
+
+// Creates hash SHA256 from parameters in an ordered JSON
+std::string hashParameters(const nlohmann::json& parameters){
+    std::string json_str = parameters.dump(); // JSON as string
+    unsigned char hash[SHA256_DIGEST_LENGTH];
+    SHA256(reinterpret_cast<const unsigned char*>(json_str.c_str()), json_str.size(), hash);
+
+    std::ostringstream oss;
+    for(int i=0; i<SHA256_DIGEST_LENGTH; i++){
+        oss<<std::hex<<std::setw(2)<<std::setfill('0')<<(int)hash[i];
+    }
+    return oss.str();
+}
+
+// Function to verify if the simulation already exists in the database
+bool simulationExists(sqlite3* db, const::string& parameters_hash, std::string& results_json_out){
+
 }

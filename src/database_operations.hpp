@@ -28,6 +28,10 @@ int insertGeneralData(const char* s);
 
 int printTableData(void* data, int argCount, char** argVector, char** columnName);
 int checkTableData(const char* s, const string& tableName);
+
+// Functions created after merging SQLite into the cpp model
 void initializeDatabase(sqlite3* db);
+std::string hashParameters(const nlohmann::json& parameters);
+bool simulationExists(sqlite3* db, const::string& parameters_hash, std::string& results_json_out);
 
 #endif // DATABASE_OPERATIONS_H
