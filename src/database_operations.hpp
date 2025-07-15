@@ -1,10 +1,15 @@
 #ifndef DATABASE_OPERATIONS_H
 #define DATABASE_OPERATIONS_H
 
-#include <string>
 #include "sqlite3.h"
+
+#include <vector>
+#include <nlohmann/json.hpp>
+#include <string>
 #include <iomanip>
 #include <fstream>
+#include <openssl/sha.h>
+#include <sstream>
 
 using namespace std;
 
