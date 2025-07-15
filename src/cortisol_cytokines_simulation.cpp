@@ -8,6 +8,8 @@
 #include <filesystem>
 #include <fstream>
 #include <nlohmann/json.hpp>
+#include <fmt/chrono.h>
+#include <fmt/color.h>
 
 #include "cortisol_cytokines_model.hpp"
 #include "utilities.hpp"
