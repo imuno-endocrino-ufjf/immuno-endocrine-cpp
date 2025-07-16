@@ -1,3 +1,6 @@
+#include "database_operations.hpp"
+#include <sqlite3.h>
+
 #include "cortisol_cytokines_simulation.hpp"
 
 #include <fmt/base.h>
@@ -45,6 +48,7 @@ void CortisolCytokinesSimulation::setCsv(bool csv) {
 void CortisolCytokinesSimulation::startSimulation() const {
     CortisolCytokinesModel cortisol_cytokines_model;
     std::vector<double> initial_conditions = {2, 5, 10, 0.7, 0, 0, 0.17, 2.32};
+    nlohmann::json json_file;
 
     if (!this->input_path.empty()) {
         try {
@@ -83,12 +87,49 @@ void CortisolCytokinesSimulation::startSimulation() const {
         }
     } else {
         cortisol_cytokines_model.setDefaultParameters();
+        json_file["parameters"] = cortisol_cytokines_model.values.toJson();
+        json_file["initial_conditions"] = initial_conditions;
     }
+
+    sqlite3* db;
+
+    if(sqlite3_open("simulations.db", &db) != SQLITE_OK){
+        fmt::print(stderr, "Error while opening SQLITE Database.\n");
+        return;
+    }
+
+    // creates hash from parameters
+    std::string param_hash = hashParameters(json_file);
+    std::string results_json;
+
+    // checks if the result already exists in the database
+    if(simulationExists(db, param_hash, results_json)){
+        fmt::print("Simulation already exists in the database. Reusing data:\n");
+
+        auto parsed = nlohmann::json::parse(results_json);
+        auto states = parsed.at("states").get<std::vector<std::vector<double>>>();
+        auto times = parsed.at("times").get<std::vector<double>>();
+
+        if (this->plot) {
+            CortisolCytokinesModel::plotResults(states, times);
+        }
+
+        if (this->csv) {
+            Utilities::writeCsv(
+                {"Time", "Antigens", "Active Macrophages", "Resting Macrophages", "IL10", "IL6", "IL8", "TNF-ɑ", "Cortisol"},
+                Utilities::combineStateWithTimeVector(states, times)
+            );
+        }
+
+        sqlite3_close(db);
+        return;
+    }
+
 
     std::vector<std::vector<double>> states;
     std::vector<double> times;
 
-    fmt::print("Starting simulation.\n");
+    fmt::print("Starting new simulation.\n");
 
 #ifndef NDEBUG
     auto simulation_start = std::chrono::high_resolution_clock::now();
@@ -159,4 +200,14 @@ void CortisolCytokinesSimulation::startSimulation() const {
 
         fmt::print("CSV write done.\n");
     }
+
+    //  storing in the database
+    nlohmann::json results_json_obj;
+    results_json_obj["states"] = states;
+    results_json_obj["times"] = times;
+
+    storeSimulationResults(db, param_hash, json_file.dump(), results_json_obj.dump());
+
+    sqlite3_close(db);
+    fmt::print("Data successfully stored.\n");
 }
