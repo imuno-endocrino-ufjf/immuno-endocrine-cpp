@@ -11,6 +11,8 @@
 #include <sstream>
 #include <openssl/sha.h>
 
+#define MODEL_UPDATE 250702
+
 using namespace std;
 
 int createDB(const char* s) {
@@ -346,4 +348,18 @@ bool simulationExists(sqlite3* db, const::string& parameters_hash, std::string& 
     }
     sqlite3_finalize(stmt);
     return found;
+}
+
+void storeSimulationResults(sqlite3* db, const std::string& parameters_hash, const std::string& parameters_json, const std::string& results_json){
+    const char* sql = "INSERT INTO simulations (parameters_hash, parameters_json, results_json), VALUES (?,?,?)";
+    sqlite3_stmt stmt;
+
+    if(sqlite3_prepare_v2(db, sql, -1, &stmt, nullptr) == SQLITE_OK){
+        sqlite3_bind_text(stmt, 1, parameters_hash.c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_text(stmt, 2, parameters_json.c_str(), -1, SQLITE_STATIC);
+        sqlite3_bind_text(stmt, 3, results_json.c_str(), -1, SQLITE_STATIC);
+        sqlite3_step(stmt);
+    }
+
+    sqlite3_finalize(stmt);
 }

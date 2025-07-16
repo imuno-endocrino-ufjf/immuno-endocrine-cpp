@@ -38,5 +38,6 @@ int checkTableData(const char* s, const string& tableName);
 void initializeDatabase(sqlite3* db);
 std::string hashParameters(const nlohmann::json& parameters);
 bool simulationExists(sqlite3* db, const::string& parameters_hash, std::string& results_json_out);
+void storeSimulationResults(sqlite3* db, const std::string& parameters_hash, const std::string& parameters_json, const std::string& results_json);
 
 #endif // DATABASE_OPERATIONS_H
