@@ -159,7 +159,7 @@ void CortisolCytokinesModel::plotResults(const std::vector<std::vector<double>> 
 nlohmann::json CortisolCytokinesModel::toJson(const std::vector<double>& initial_conditions) const {
     nlohmann::json j;
 
-    // Serializa condições iniciais
+    // Initial conditions serialization
     j["initial_conditions"] = {
         {"antigens", initial_conditions[0]},
         {"active_macrophages", initial_conditions[1]},
@@ -171,7 +171,7 @@ nlohmann::json CortisolCytokinesModel::toJson(const std::vector<double>& initial
         {"cortisol", initial_conditions[7]}
     };
 
-    // Serializa parâmetros
+    // Parameters serialization
     j["parameters"] = {
         {"k_6", values.k_6}, {"k_6M", values.k_6m}, {"k_6TNF", values.k_6tnf},
         {"k_8", values.k_8}, {"k_8M", values.k_8m}, {"k_8TNF", values.k_8tnf},
@@ -189,7 +189,7 @@ nlohmann::json CortisolCytokinesModel::toJson(const std::vector<double>& initial
         {"klt", values.klt}, {"klt6", values.klt6}, {"Cmax", values.cmax},
         {"beta_A", values.beta_a}, {"k_A", values.k_a}, {"m_A", values.m_a},
         {"MR_max", values.mr_max}, {"k_MA", values.k_ma}, {"k_MR", values.k_mr}, {"k_M", values.k_m},
-        {"glucose", values.gluc} // É um std::map<double, double>
+        {"glucose", values.gluc} // std::map<double, double>
     };
 
     return j;
