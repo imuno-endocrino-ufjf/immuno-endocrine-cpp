@@ -155,3 +155,43 @@ void CortisolCytokinesModel::plotResults(const std::vector<std::vector<double>> 
 #endif
     }
 };
+
+nlohmann::json CortisolCytokinesModel::toJson(const std::vector<double>& initial_conditions) const {
+    nlohmann::json j;
+
+    // Serializa condições iniciais
+    j["initial_conditions"] = {
+        {"antigens", initial_conditions[0]},
+        {"active_macrophages", initial_conditions[1]},
+        {"resting_macrophages", initial_conditions[2]},
+        {"il-10", initial_conditions[3]},
+        {"il-6", initial_conditions[4]},
+        {"il-8", initial_conditions[5]},
+        {"tnf-alpha", initial_conditions[6]},
+        {"cortisol", initial_conditions[7]}
+    };
+
+    // Serializa parâmetros
+    j["parameters"] = {
+        {"k_6", values.k_6}, {"k_6M", values.k_6m}, {"k_6TNF", values.k_6tnf},
+        {"k_8", values.k_8}, {"k_8M", values.k_8m}, {"k_8TNF", values.k_8tnf},
+        {"k_10", values.k_10}, {"k_10M", values.k_10m}, {"k_TNF", values.k_tnf},
+        {"k_TNFM", values.k_tnfm}, {"k_MTNF", values.k_mtnf},
+        {"q_IL6", values.q_il6}, {"q_IL8", values.q_il8}, {"q_IL10", values.q_il10}, {"q_TNF", values.q_tnf},
+        {"n_106", values.n_106}, {"n_610", values.n_610}, {"n_66", values.n_66}, {"n_6TNF", values.n_6tnf},
+        {"n_TNF6", values.n_tnf6}, {"n_810", values.n_810}, {"n_8TNF", values.n_8tnf},
+        {"n_M10", values.n_m10}, {"n_TNF10", values.n_tnf10}, {"n_MTNF", values.n_mtnf},
+        {"h_106", values.h_106}, {"h_610", values.h_610}, {"h_66", values.h_66}, {"h_6TNF", values.h_6tnf},
+        {"h_TNF6", values.h_tnf6}, {"h_810", values.h_810}, {"h_8TNF", values.h_8tnf},
+        {"h_M10", values.h_m10}, {"h_TNF10", values.h_tnf10}, {"h_MTNF", values.h_mtnf},
+        {"k_106", values.k_106},
+        {"ktc", values.ktc}, {"kmct", values.kmct}, {"kmtc", values.kmtc}, {"kcd", values.kcd},
+        {"klt", values.klt}, {"klt6", values.klt6}, {"Cmax", values.cmax},
+        {"beta_A", values.beta_a}, {"k_A", values.k_a}, {"m_A", values.m_a},
+        {"MR_max", values.mr_max}, {"k_MA", values.k_ma}, {"k_MR", values.k_mr}, {"k_M", values.k_m},
+        {"glucose", values.gluc} // É um std::map<double, double>
+    };
+
+    return j;
+}
+
