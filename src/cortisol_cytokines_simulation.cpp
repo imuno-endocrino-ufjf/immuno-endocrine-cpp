@@ -112,6 +112,7 @@ void CortisolCytokinesSimulation::startSimulation() const {
 #endif
 
         CortisolCytokinesModel::plotResults(states, times);
+        CortisolCytokinesModel::plotDailyAverage(states, times);
 
 #ifndef NDEBUG
         auto plotting_end = std::chrono::high_resolution_clock::now();

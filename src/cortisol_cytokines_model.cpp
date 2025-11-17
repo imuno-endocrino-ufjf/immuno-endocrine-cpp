@@ -139,6 +139,7 @@ void CortisolCytokinesModel::plotResults(const std::vector<std::vector<double>> 
 
     for (int i = 0; i < 8; i++) {
         auto figure = matplot::figure(true);
+        figure->backend()->run_command("unset warnings");
         auto axes = figure->current_axes();
         axes->plot(times, separated_states[i]);
 
@@ -150,6 +151,80 @@ void CortisolCytokinesModel::plotResults(const std::vector<std::vector<double>> 
         auto current_plot_duration = std::chrono::duration_cast<std::chrono::microseconds>(current_plot_time - previous_plot_time);
 
         fmt::print(fg(fmt::color::dark_golden_rod) | fmt::emphasis::bold, "->{} plotting done. Plotting duration: {} ({})\n", FILE_NAMES[i], current_plot_duration, std::chrono::duration_cast<std::chrono::seconds>(current_plot_duration));
+
+        previous_plot_time = current_plot_time;
+#endif
+    }
+};
+
+void CortisolCytokinesModel::plotDailyAverage(const std::vector<std::vector<double>> &states, const std::vector<double> &times) {
+    const std::array<std::string, 8> FILE_NAMES = {"antigen", "active_macrophage", "resting_macrophage", "il10", "il6", "il8", "tnf", "cortisol"};
+    std::array<std::vector<double>, 8> separated_states;
+
+#ifndef NDEBUG
+    auto start_average_calculation_time = std::chrono::high_resolution_clock::now();
+
+    fmt::print(fg(fmt::color::dark_golden_rod) | fmt::emphasis::bold, "->Starting average calculation.\n");
+#endif
+
+    int index = 0;
+    // - 1 to prevent the last day from being plotted and messing up the graph
+    // due to the way the simulation is ran the last day will always only have 1 value,
+    // that value tends to be considerably different from the daily average and, thus,
+    // causes a spike downwards on the graph of most of the metrics
+    while (index < times.size() - 1) {
+        int current_index = index + 1;
+
+        std::array<double, 8> sums;
+        for (int j = 0; j < sums.size(); j++) {
+            sums[j] = states[index][j];
+        }
+
+        while (current_index < times.size() && int(times[current_index]) - int(times[index]) < 1) {
+            for (int j = 0; j < sums.size(); j++) {
+                sums[j] += states[current_index][j];
+            }
+
+            current_index++;
+        }
+
+        for (int j = 0; j < sums.size(); j++) {
+            separated_states[j].push_back(sums[j] / (current_index - index + 1));
+        }
+
+        index = current_index;
+    }
+
+    std::vector<int> days;
+    for (int index = 0; index < separated_states[0].size(); index++) {
+        days.push_back(index);
+    }
+
+#ifndef NDEBUG
+    auto end_average_calculation_time = std::chrono::high_resolution_clock::now();
+    auto average_calculation_duration = std::chrono::duration_cast<std::chrono::microseconds>(end_average_calculation_time - start_average_calculation_time);
+
+    fmt::print(fg(fmt::color::dark_golden_rod) | fmt::emphasis::bold, "->Daily average calculation done. Calculation duration: {} ({})\n", average_calculation_duration, std::chrono::duration_cast<std::chrono::seconds>(average_calculation_duration));
+#endif
+
+#ifndef NDEBUG
+    auto previous_plot_time = std::chrono::high_resolution_clock::now();
+#endif
+
+    for (int i = 0; i < 8; i++) {
+        auto figure = matplot::figure(true);
+        figure->backend()->run_command("unset warnings");
+        auto axes = figure->current_axes();
+        axes->plot(days, separated_states[i]);
+
+        const std::filesystem::path FILE_PATH = "output/" + FILE_NAMES[i] + "_average" + ".png";
+        figure->save(FILE_PATH.string());
+
+#ifndef NDEBUG
+        auto current_plot_time = std::chrono::high_resolution_clock::now();
+        auto current_plot_duration = std::chrono::duration_cast<std::chrono::microseconds>(current_plot_time - previous_plot_time);
+
+        fmt::print(fg(fmt::color::dark_golden_rod) | fmt::emphasis::bold, "->{} average plotting done. Plotting duration: {} ({})\n", FILE_NAMES[i], current_plot_duration, std::chrono::duration_cast<std::chrono::seconds>(current_plot_duration));
 
         previous_plot_time = current_plot_time;
 #endif

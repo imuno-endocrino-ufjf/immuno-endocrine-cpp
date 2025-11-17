@@ -27,6 +27,7 @@ class CortisolCytokinesModel {
         void setDefaultParameters();
         void operator()(const std::vector<double> &x, std::vector<double> &dxdt, const double T) const;
         static void plotResults(const std::vector<std::vector<double>> &states, const std::vector<double> &times);
+        static void plotDailyAverage(const std::vector<std::vector<double>> &states, const std::vector<double> &times);
 };
 
 #endif
