@@ -84,4 +84,4 @@ output/
 .direnv
 
 # SQLite database (generated locally)
-database/immuno.db
+database/*.db
