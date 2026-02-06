@@ -1,14 +1,21 @@
 #pragma once
-#include <sqlite3.h>
+
 #include <string>
+#include <optional>
+#include <sqlite3.h>
 
 class Database {
 public:
-    Database(const std::string& path);
+    Database(const std::string& db_path);
     ~Database();
 
-    sqlite3* get();
-    
+    bool simulationExists(const std::string& hash,
+                          std::string& results_path_out);
+
+    void insertSimulation(const std::string& hash,
+                          const std::string& config_json,
+                          const std::string& results_path);
+
 private:
     sqlite3* db;
 };
