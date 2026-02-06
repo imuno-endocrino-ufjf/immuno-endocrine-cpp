@@ -4,7 +4,9 @@
 Database::Database(const std::string& db_path) : db(nullptr) {
     if (sqlite3_open(db_path.c_str(), &db) != SQLITE_OK) {
         throw std::runtime_error("Failed to open database");
+
     }
+    initializeSchema();
 }
 
 Database::~Database() {
@@ -57,4 +59,24 @@ void Database::insertSimulation(const std::string& hash,
     }
 
     sqlite3_finalize(stmt);
+}
+
+void Database::initializeSchema() {
+    const char* sql = R"(
+        CREATE TABLE IF NOT EXISTS simulations (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            parameters_hash TEXT UNIQUE NOT NULL,
+            config_json TEXT NOT NULL,
+            results_path TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        );
+    )";
+
+    char* error_message = nullptr;
+
+    if (sqlite3_exec(db, sql, nullptr, nullptr, &error_message) != SQLITE_OK) {
+        std::string error = error_message ? error_message : "unknown error";
+        sqlite3_free(error_message);
+        throw std::runtime_error("Failed to initialize database schema: " + error);
+    }
 }
