@@ -42,6 +42,11 @@ void CortisolCytokinesSimulation::setCsv(bool csv) {
 }
 
 void CortisolCytokinesSimulation::startSimulation() const {
+
+    if (!output_path.empty()) {
+        std::filesystem::create_directories(output_path);
+    }
+
     CortisolCytokinesModel cortisol_cytokines_model;
     std::vector<double> initial_conditions = {2, 5, 10, 0.7, 0, 0, 0.17, 2.32};
 
@@ -142,9 +147,11 @@ void CortisolCytokinesSimulation::startSimulation() const {
         auto csv_writing_start = std::chrono::high_resolution_clock::now();
 #endif
 
+        std::filesystem::path csv_path = output_path / "values.csv";
+
         Utilities::writeCsv(
             {"Time", "Antigens", "Active Macrophages", "Resting Macrophages", "IL10", "IL6", "IL8", "TNF-ɑ", "Cortisol"},
-            combined_state_time
+            combined_state_time, csv_path
         );
 
 #ifndef NDEBUG
@@ -159,4 +166,8 @@ void CortisolCytokinesSimulation::startSimulation() const {
 
         fmt::print("CSV write done.\n");
     }
+}
+
+void CortisolCytokinesSimulation::setOutputPath(const std::filesystem::path& path) {
+    this->output_path = path;
 }

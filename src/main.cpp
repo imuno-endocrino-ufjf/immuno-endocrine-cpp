@@ -156,11 +156,14 @@ int main(int argc, char *argv[]) {
     }
 
     // Run simulation (cache miss)
+    std::filesystem::path results_path = std::filesystem::path("output") / parameters_hash;
+
     CortisolCytokinesSimulation cortisol_cytokines_simulation;
 
     cortisol_cytokines_simulation.setDays(days);
     cortisol_cytokines_simulation.setPlot(plot);
     cortisol_cytokines_simulation.setCsv(csv);
+    cortisol_cytokines_simulation.setOutputPath(results_path);
 
     if (!input_path.empty()) {
         cortisol_cytokines_simulation.setInputPath(input_path);
@@ -169,8 +172,6 @@ int main(int argc, char *argv[]) {
     cortisol_cytokines_simulation.startSimulation();
 
     // Store simulation metadata
-
-    std::filesystem::path results_path = std::filesystem::path("output") / parameters_hash;
 
     std::filesystem::create_directories(results_path);
 

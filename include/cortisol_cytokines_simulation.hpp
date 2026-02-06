@@ -11,6 +11,7 @@ class CortisolCytokinesSimulation {
         std::filesystem::path input_path;
         bool plot;
         bool csv;
+        std::filesystem::path output_path;
 
     public:
         CortisolCytokinesSimulation(std::filesystem::path input_path = std::filesystem::path(), int days = 36500, bool plot = true, bool csv = true);
@@ -19,6 +20,7 @@ class CortisolCytokinesSimulation {
         void setPlot(bool plot);
         void setCsv(bool csv);
         void startSimulation() const;
+        void setOutputPath(const std::filesystem::path& path);
 };
 
 #endif
