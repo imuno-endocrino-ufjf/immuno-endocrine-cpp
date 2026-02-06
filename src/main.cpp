@@ -34,9 +34,7 @@ int main(int argc, char *argv[]) {
     );
 #endif
 
-    // ----------------------------
     // CLI argument parsing
-    // ----------------------------
     for (int i = 1; i < argc; i++) {
         try {
             if (
@@ -125,9 +123,7 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    // ----------------------------
     // Load configuration JSON
-    // ----------------------------
     std::filesystem::path config_path =
         input_path.empty() ? "configuration.sample.json" : input_path;
 
@@ -144,9 +140,7 @@ int main(int argc, char *argv[]) {
         return 4;
     }
 
-    // ----------------------------
     // Hash + database lookup
-    // ----------------------------
     std::string parameters_hash = hashJson(config_json);
 
     Database db("database/immuno.db");
@@ -161,9 +155,7 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    // ----------------------------
     // Run simulation (cache miss)
-    // ----------------------------
     CortisolCytokinesSimulation cortisol_cytokines_simulation;
 
     cortisol_cytokines_simulation.setDays(days);
@@ -176,9 +168,7 @@ int main(int argc, char *argv[]) {
 
     cortisol_cytokines_simulation.startSimulation();
 
-    // ----------------------------
     // Store simulation metadata
-    // ----------------------------
 
     std::filesystem::path results_path = std::filesystem::path("output") / parameters_hash;
 
