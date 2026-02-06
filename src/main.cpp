@@ -9,12 +9,17 @@
 #include <fmt/color.h>
 
 #include <filesystem>
+#include <fstream>
 #include <stdexcept>
 #include <string>
 #include <vector>
 
+#include <nlohmann/json.hpp>
+
 #include "cortisol_cytokines_simulation.hpp"
 #include "utilities.hpp"
+#include "database.hpp"
+#include "hash.hpp"
 
 int main(int argc, char *argv[]) {
     std::filesystem::path input_path;
@@ -23,9 +28,15 @@ int main(int argc, char *argv[]) {
     bool csv = true;
 
 #ifndef NDEBUG
-    fmt::print(fg(fmt::color::dark_golden_rod) | fmt::emphasis::bold, "Profiling enabled!\n\n");
+    fmt::print(
+        fg(fmt::color::dark_golden_rod) | fmt::emphasis::bold,
+        "Profiling enabled!\n\n"
+    );
 #endif
 
+    // ----------------------------
+    // CLI argument parsing
+    // ----------------------------
     for (int i = 1; i < argc; i++) {
         try {
             if (
@@ -37,7 +48,12 @@ int main(int argc, char *argv[]) {
                         std::filesystem::path input_path = input;
 
                         if (!std::filesystem::is_regular_file(input_path)) {
-                            fmt::print(stderr, fg(fmt::color::dark_red) | fmt::emphasis::bold, "Invalid file path: {}\n", input);
+                            fmt::print(
+                                stderr,
+                                fg(fmt::color::dark_red) | fmt::emphasis::bold,
+                                "Invalid file path: {}\n",
+                                input
+                            );
                             exit(3);
                         }
 
@@ -56,7 +72,12 @@ int main(int argc, char *argv[]) {
                         int days = std::stoi(input);
 
                         if (days <= 0) {
-                            fmt::print(stderr, fg(fmt::color::dark_red) | fmt::emphasis::bold, "Invalid amount of days: {}\n", days);
+                            fmt::print(
+                                stderr,
+                                fg(fmt::color::dark_red) | fmt::emphasis::bold,
+                                "Invalid amount of days: {}\n",
+                                days
+                            );
                             exit(3);
                         }
 
@@ -67,37 +88,82 @@ int main(int argc, char *argv[]) {
                 days = days_return.value();
                 i++;
             } else if (
-                auto no_plot_return = Utilities::readParameter<bool>(
+                Utilities::readParameter<bool>(
                     {"--no-plot"},
                     argv[i],
-                    (char *) "1",
-                    [](std::string input) -> bool {
-                        return true;
-                    }
+                    (char *)"1",
+                    [](std::string) -> bool { return true; }
                 )
             ) {
                 plot = false;
             } else if (
-                auto no_csv_return = Utilities::readParameter<bool>(
+                Utilities::readParameter<bool>(
                     {"--no-csv"},
                     argv[i],
-                    (char *) "1",
-                    [](std::string input) -> bool {
-                        return true;
-                    }
+                    (char *)"1",
+                    [](std::string) -> bool { return true; }
                 )
             ) {
                 csv = false;
             } else {
-                fmt::print(stderr, fg(fmt::color::dark_red) | fmt::emphasis::bold, "Unknown parameter: {}\n", argv[i]);
+                fmt::print(
+                    stderr,
+                    fg(fmt::color::dark_red) | fmt::emphasis::bold,
+                    "Unknown parameter: {}\n",
+                    argv[i]
+                );
                 exit(1);
             }
-        } catch (std::invalid_argument exception) {
-            fmt::print(stderr, fg(fmt::color::dark_red) | fmt::emphasis::bold, "Missing value for paramter: {}\n", argv[i]);
+        } catch (std::invalid_argument&) {
+            fmt::print(
+                stderr,
+                fg(fmt::color::dark_red) | fmt::emphasis::bold,
+                "Missing value for parameter: {}\n",
+                argv[i]
+            );
             exit(2);
         }
     }
 
+    // ----------------------------
+    // Load configuration JSON
+    // ----------------------------
+    std::filesystem::path config_path =
+        input_path.empty() ? "configuration.sample.json" : input_path;
+
+    nlohmann::json config_json;
+    try {
+        config_json = Utilities::loadConfiguration(config_path);
+    } catch (const std::exception& e) {
+        fmt::print(
+            stderr,
+            fg(fmt::color::dark_red) | fmt::emphasis::bold,
+            "{}\n",
+            e.what()
+        );
+        return 4;
+    }
+
+    // ----------------------------
+    // Hash + database lookup
+    // ----------------------------
+    std::string parameters_hash = hashJson(config_json);
+
+    Database db("database/immuno.db");
+
+    std::string cached_results_path;
+    if (db.simulationExists(parameters_hash, cached_results_path)) {
+        fmt::print(
+            fg(fmt::color::green) | fmt::emphasis::bold,
+            "Cached simulation found. Skipping simulation.\n"
+        );
+        fmt::print("Results path: {}\n", cached_results_path);
+        return 0;
+    }
+
+    // ----------------------------
+    // Run simulation (cache miss)
+    // ----------------------------
     CortisolCytokinesSimulation cortisol_cytokines_simulation;
 
     cortisol_cytokines_simulation.setDays(days);
@@ -109,6 +175,20 @@ int main(int argc, char *argv[]) {
     }
 
     cortisol_cytokines_simulation.startSimulation();
+
+    // ----------------------------
+    // Store simulation metadata
+    // ----------------------------
+
+    std::filesystem::path results_path = std::filesystem::path("output") / parameters_hash;
+
+    std::filesystem::create_directories(results_path);
+
+    db.insertSimulation(
+        parameters_hash,
+        config_json.dump(),
+        results_path
+    );
 
     return 0;
 }
