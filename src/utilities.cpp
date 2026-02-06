@@ -6,6 +6,9 @@
 
 #include <filesystem>
 
+#include <fstream>
+#include <nlohmann/json.hpp>
+
 #ifndef NDEBUG
     #include <fmt/chrono.h>
     #include <fmt/color.h>
@@ -91,4 +94,15 @@ namespace Utilities {
 
         file.close();
     }
+
+    nlohmann::json loadConfiguration(const std::filesystem::path& path) {
+    std::ifstream file(path);
+    if (!file.is_open()) {
+        throw std::runtime_error("Não foi possível abrir " + path.string());
+    }
+
+    nlohmann::json j;
+    file >> j;
+    return j;
+}
 }  // namespace Utilities

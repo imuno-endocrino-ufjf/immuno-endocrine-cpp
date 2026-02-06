@@ -10,6 +10,7 @@
 #include <optional>
 #include <stdexcept>
 #include <vector>
+#include <nlohmann/json.hpp>
 
 #ifndef NDEBUG
     #include <chrono>
@@ -134,6 +135,8 @@ namespace Utilities {
     };
 
     void writeCsv(const std::vector<std::string> &header, const std::vector<std::vector<double>> &values, const std::filesystem::path &output_path = "output/values.csv");
+
+    nlohmann::json loadConfiguration(const std::filesystem::path& path);
 }  // namespace Utilities
 
 #endif
