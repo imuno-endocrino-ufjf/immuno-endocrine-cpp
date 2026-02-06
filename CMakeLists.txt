@@ -13,6 +13,9 @@ add_executable(immuno-endocrine-cpp
     src/cortisol_cytokines_model.cpp
     src/cortisol_cytokines_values.cpp
     src/cortisol_cytokines_simulation.cpp
+
+    src/database.cpp
+    src/hash.cpp
 )
 target_include_directories(immuno-endocrine-cpp PUBLIC "${PROJECT_SOURCE_DIR}/include")
 
@@ -37,3 +40,15 @@ target_link_libraries(immuno-endocrine-cpp PRIVATE fmt::fmt)
 
 find_package(nlohmann_json CONFIG REQUIRED)
 target_link_libraries(immuno-endocrine-cpp PRIVATE nlohmann_json::nlohmann_json)
+
+find_package(SQLite3 REQUIRED)
+target_link_libraries(immuno-endocrine-cpp PRIVATE SQLite::SQLite3)
+
+find_package(OpenSSL REQUIRED)
+target_link_libraries(immuno-endocrine-cpp PRIVATE OpenSSL::Crypto)
+
+configure_file(
+    ${PROJECT_SOURCE_DIR}/database/schema.sql
+    ${PROJECT_BINARY_DIR}/schema.sql
+    COPYONLY
+)
