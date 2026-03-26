@@ -1,6 +1,7 @@
 {
   "$schema": "configuration.schema.json",
   "simulation_duration": 36500,
+  "name": "36500days",
   "initial_conditions": {
     "antigens": 2,
     "active_macrophages": 5,

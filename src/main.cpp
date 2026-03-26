@@ -140,6 +140,16 @@ int main(int argc, char *argv[]) {
         return 4;
     }
 
+    // Extract optional name
+    std::string simulation_name;
+
+    if (config_json.contains("name") && config_json["name"].is_string()) {
+        simulation_name = config_json["name"].get<std::string>();
+
+        // Simple sanitization (avoid issues with spaces in file paths)
+        std::replace(simulation_name.begin(), simulation_name.end(), ' ', '_');
+    }
+
     // Hash + database lookup
     std::string parameters_hash = hashJson(config_json);
 
@@ -155,9 +165,17 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    // Run simulation (cache miss)
-    std::filesystem::path results_path = std::filesystem::path("output") / parameters_hash;
+    // Define output path
+    std::filesystem::path results_path;
 
+    if (!simulation_name.empty()) {
+        results_path = std::filesystem::path("output") /
+                       (simulation_name + "_" + parameters_hash.substr(0, 8));
+    } else {
+        results_path = std::filesystem::path("output") / parameters_hash;
+    }
+
+    // Run simulation
     CortisolCytokinesSimulation cortisol_cytokines_simulation;
 
     cortisol_cytokines_simulation.setDays(days);
@@ -172,13 +190,12 @@ int main(int argc, char *argv[]) {
     cortisol_cytokines_simulation.startSimulation();
 
     // Store simulation metadata
-
     std::filesystem::create_directories(results_path);
 
     db.insertSimulation(
         parameters_hash,
         config_json.dump(),
-        results_path
+        results_path.string()
     );
 
     return 0;
