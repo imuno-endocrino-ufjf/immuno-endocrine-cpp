@@ -12,7 +12,8 @@
 int main(int argc, char *argv[]) {
     std::filesystem::path input_path;
     int days = 36500;
-    bool plot = true;
+    bool plot_all_values = true;
+    bool plot_daily_averages = true;
     bool csv = true;
 
 #ifndef NDEBUG
@@ -60,8 +61,8 @@ int main(int argc, char *argv[]) {
                 days = days_return.value();
                 i++;
             } else if (
-                auto no_plot_return = Utilities::readParameter<bool>(
-                    {"--no-plot"},
+                auto plot_all_values_return = Utilities::readParameter<bool>(
+                    {"--no-full-plot"},
                     argv[i],
                     (char *) "1",
                     [](std::string input) -> bool {
@@ -69,7 +70,18 @@ int main(int argc, char *argv[]) {
                     }
                 )
             ) {
-                plot = false;
+                plot_all_values = false;
+            } else if (
+                auto plot_averages_resturn = Utilities::readParameter<bool>(
+                    {"--no-daily-averages"},
+                    argv[i],
+                    (char *) "1",
+                    [](std::string input) -> bool {
+                        return true;
+                    }
+                )
+            ) {
+                plot_daily_averages = false;
             } else if (
                 auto no_csv_return = Utilities::readParameter<bool>(
                     {"--no-csv"},
@@ -94,7 +106,8 @@ int main(int argc, char *argv[]) {
     CortisolCytokinesSimulation cortisol_cytokines_simulation;
 
     cortisol_cytokines_simulation.setDays(days);
-    cortisol_cytokines_simulation.setPlot(plot);
+    cortisol_cytokines_simulation.setPlotAllValues(plot_all_values);
+    cortisol_cytokines_simulation.setPlotDailyAverages(plot_daily_averages);
     cortisol_cytokines_simulation.setCsv(csv);
 
     if (!input_path.empty()) {

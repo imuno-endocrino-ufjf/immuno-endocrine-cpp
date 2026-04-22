@@ -2,6 +2,7 @@
 #define __UTILITIES_HPP__
 
 #include <fmt/base.h>
+#include <matplot/matplot.h>
 
 #include <cmath>
 #include <filesystem>
@@ -132,6 +133,55 @@ namespace Utilities {
             IntegralObserver(std::vector<std::vector<double>> &states, std::vector<double> &times);
             void operator()(const std::vector<double> &x, double t);
     };
+
+    template<class TimeType, class StateType>
+    struct Result {
+            std::vector<TimeType> time;
+            std::vector<StateType> state;
+
+            std::string legend;
+            std::string options;
+    };
+
+    template<class TimeType, class StateType>
+    inline void plotResults(
+        const std::vector<Utilities::Result<TimeType, StateType>> &results,
+        const std::string &file_name,
+        const std::optional<std::string> &x_label = std::nullopt,
+        const std::optional<std::string> &y_label = std::nullopt,
+        const std::optional<std::string> &title = std::nullopt
+    ) {
+        auto figure = matplot::figure(true);
+        // newer versions of gnuplot will constantly print warnings when plotting
+        // this makes plotting take considerably longer even though the warning aren't relevant
+        // so, to mitigate this, we hide all warnings
+        figure->backend()->run_command("unset warnings");
+        figure->size(1280, 720);
+        auto axes = figure->current_axes();
+        axes->hold(matplot::on);
+
+        std::vector<std::string> legends;
+        for (const auto &result : results) {
+            axes->plot(result.time, result.state, result.options.c_str());
+            legends.push_back(result.legend);
+        }
+        axes->legend(legends);
+
+        if (x_label) {
+            axes->xlabel(x_label.value());
+        }
+
+        if (y_label) {
+            axes->ylabel(y_label.value());
+        }
+
+        if (title) {
+            axes->title(title.value());
+        }
+
+        const std::filesystem::path FILE_PATH = "output/" + file_name + ".jpg";
+        figure->save(FILE_PATH);
+    }
 
     void writeCsv(const std::vector<std::string> &header, const std::vector<std::vector<double>> &values, const std::filesystem::path &output_path = "output/values.csv");
 }  // namespace Utilities

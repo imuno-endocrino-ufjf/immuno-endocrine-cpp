@@ -3,6 +3,8 @@
 #include <fmt/base.h>
 #include <fmt/os.h>
 #include <fmt/ranges.h>
+#include <matplot/matplot.h>
+#include <matplot/util/keywords.h>
 
 #include <filesystem>
 

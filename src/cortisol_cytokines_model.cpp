@@ -4,17 +4,13 @@
 #include <matplot/matplot.h>
 
 #include <cmath>
-#include <filesystem>
 #include <nlohmann/json.hpp>
-#include <string>
 
 #include "utilities.hpp"
 
 #ifndef NDEBUG
     #include <fmt/chrono.h>
     #include <fmt/color.h>
-
-    #include <chrono>
 #endif
 
 void CortisolCytokinesModel::setParameters(const nlohmann::basic_json<> &json_file) {
@@ -123,9 +119,9 @@ void CortisolCytokinesModel::operator()(const std::vector<double> &x, std::vecto
     dxdt[7] = DCORDT;
 }
 
-void CortisolCytokinesModel::plotResults(const std::vector<std::vector<double>> &states, const std::vector<double> &times) {
-    const std::array<std::string, 8> FILE_NAMES = {"antigen", "active_macrophage", "resting_macrophage", "il10", "il6", "il8", "tnf", "cortisol"};
-    std::array<std::vector<double>, 8> separated_states;
+std::vector<std::vector<double>> CortisolCytokinesModel::separateStates(const std::vector<std::vector<double>> &states) {
+    std::vector<std::vector<double>> separated_states;
+    separated_states.reserve(8);
 
     for (const auto &state : states) {
         for (int i = 0; i < 8; i++) {
@@ -133,39 +129,18 @@ void CortisolCytokinesModel::plotResults(const std::vector<std::vector<double>> 
         }
     }
 
-#ifndef NDEBUG
-    auto previous_plot_time = std::chrono::high_resolution_clock::now();
-#endif
-
-    for (int i = 0; i < 8; i++) {
-        auto figure = matplot::figure(true);
-        figure->backend()->run_command("unset warnings");
-        auto axes = figure->current_axes();
-        axes->plot(times, separated_states[i]);
-
-        const std::filesystem::path FILE_PATH = "output/" + FILE_NAMES[i] + ".png";
-        figure->save(FILE_PATH.string());
-
-#ifndef NDEBUG
-        auto current_plot_time = std::chrono::high_resolution_clock::now();
-        auto current_plot_duration = std::chrono::duration_cast<std::chrono::microseconds>(current_plot_time - previous_plot_time);
-
-        fmt::print(fg(fmt::color::dark_golden_rod) | fmt::emphasis::bold, "->{} plotting done. Plotting duration: {} ({})\n", FILE_NAMES[i], current_plot_duration, std::chrono::duration_cast<std::chrono::seconds>(current_plot_duration));
-
-        previous_plot_time = current_plot_time;
-#endif
-    }
+    return separated_states;
 };
 
-void CortisolCytokinesModel::plotDailyAverage(const std::vector<std::vector<double>> &states, const std::vector<double> &times) {
-    const std::array<std::string, 8> FILE_NAMES = {"antigen", "active_macrophage", "resting_macrophage", "il10", "il6", "il8", "tnf", "cortisol"};
-    std::array<std::vector<double>, 8> separated_states;
+std::pair<std::vector<std::vector<double>>, std::vector<int>> CortisolCytokinesModel::calculateDailyAverages(const std::vector<std::vector<double>> &non_separated_states, const std::vector<double> &times) {
+    std::vector<std::vector<double>> daily_averages;
+    daily_averages.resize(8);
 
-#ifndef NDEBUG
-    auto start_average_calculation_time = std::chrono::high_resolution_clock::now();
+    std::cout << non_separated_states.size() << "\n";
+    std::cout << times.size() << "\n";
 
-    fmt::print(fg(fmt::color::dark_golden_rod) | fmt::emphasis::bold, "->Starting average calculation.\n");
-#endif
+
+    fmt::print("finished\n");
 
     int index = 0;
     // - 1 to prevent the last day from being plotted and messing up the graph
@@ -177,56 +152,29 @@ void CortisolCytokinesModel::plotDailyAverage(const std::vector<std::vector<doub
 
         std::array<double, 8> sums;
         for (int j = 0; j < sums.size(); j++) {
-            sums[j] = states[index][j];
+            sums[j] = non_separated_states[index][j];
         }
 
         while (current_index < times.size() && int(times[current_index]) - int(times[index]) < 1) {
             for (int j = 0; j < sums.size(); j++) {
-                sums[j] += states[current_index][j];
+                sums[j] += non_separated_states[current_index][j];
             }
 
             current_index++;
         }
 
         for (int j = 0; j < sums.size(); j++) {
-            separated_states[j].push_back(sums[j] / (current_index - index + 1));
+            daily_averages[j].push_back(sums[j] / (current_index - index + 1));
         }
 
         index = current_index;
     }
 
     std::vector<int> days;
-    for (int index = 0; index < separated_states[0].size(); index++) {
+    for (int index = 0; index < daily_averages[0].size(); index++) {
         days.push_back(index);
     }
 
-#ifndef NDEBUG
-    auto end_average_calculation_time = std::chrono::high_resolution_clock::now();
-    auto average_calculation_duration = std::chrono::duration_cast<std::chrono::microseconds>(end_average_calculation_time - start_average_calculation_time);
 
-    fmt::print(fg(fmt::color::dark_golden_rod) | fmt::emphasis::bold, "->Daily average calculation done. Calculation duration: {} ({})\n", average_calculation_duration, std::chrono::duration_cast<std::chrono::seconds>(average_calculation_duration));
-#endif
-
-#ifndef NDEBUG
-    auto previous_plot_time = std::chrono::high_resolution_clock::now();
-#endif
-
-    for (int i = 0; i < 8; i++) {
-        auto figure = matplot::figure(true);
-        figure->backend()->run_command("unset warnings");
-        auto axes = figure->current_axes();
-        axes->plot(days, separated_states[i]);
-
-        const std::filesystem::path FILE_PATH = "output/" + FILE_NAMES[i] + "_average" + ".png";
-        figure->save(FILE_PATH.string());
-
-#ifndef NDEBUG
-        auto current_plot_time = std::chrono::high_resolution_clock::now();
-        auto current_plot_duration = std::chrono::duration_cast<std::chrono::microseconds>(current_plot_time - previous_plot_time);
-
-        fmt::print(fg(fmt::color::dark_golden_rod) | fmt::emphasis::bold, "->{} average plotting done. Plotting duration: {} ({})\n", FILE_NAMES[i], current_plot_duration, std::chrono::duration_cast<std::chrono::seconds>(current_plot_duration));
-
-        previous_plot_time = current_plot_time;
-#endif
-    }
-};
+    return {daily_averages, days};
+}

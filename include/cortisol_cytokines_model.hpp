@@ -26,8 +26,9 @@ class CortisolCytokinesModel {
         void setParameters(const nlohmann::basic_json<> &json_file);
         void setDefaultParameters();
         void operator()(const std::vector<double> &x, std::vector<double> &dxdt, const double T) const;
-        static void plotResults(const std::vector<std::vector<double>> &states, const std::vector<double> &times);
-        static void plotDailyAverage(const std::vector<std::vector<double>> &states, const std::vector<double> &times);
+
+        static std::vector<std::vector<double>> separateStates(const std::vector<std::vector<double>> &states);
+        static std::pair<std::vector<std::vector<double>>, std::vector<int>> calculateDailyAverages(const std::vector<std::vector<double>> &non_separated_states, const std::vector<double> &times);
 };
 
 #endif

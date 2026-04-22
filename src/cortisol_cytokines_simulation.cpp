@@ -18,10 +18,11 @@
     #include <fmt/color.h>
 #endif
 
-CortisolCytokinesSimulation::CortisolCytokinesSimulation(std::filesystem::path input_path, int days, bool plot, bool csv) {
+CortisolCytokinesSimulation::CortisolCytokinesSimulation(std::filesystem::path input_path, int days, bool plot_all_values, bool plot_daily_averages, bool csv) {
     this->input_path = input_path;
     this->days = days;
-    this->plot = plot;
+    this->plot_all_values = plot_all_values;
+    this->plot_daily_averages = plot_daily_averages;
     this->csv = csv;
 }
 
@@ -33,8 +34,12 @@ void CortisolCytokinesSimulation::setInputPath(std::filesystem::path input_path)
     this->input_path = input_path;
 }
 
-void CortisolCytokinesSimulation::setPlot(bool plot) {
-    this->plot = plot;
+void CortisolCytokinesSimulation::setPlotAllValues(bool plot_all_values) {
+    this->plot_all_values = plot_all_values;
+}
+
+void CortisolCytokinesSimulation::setPlotDailyAverages(bool plot_daily_averages) {
+    this->plot_daily_averages = plot_daily_averages;
 }
 
 void CortisolCytokinesSimulation::setCsv(bool csv) {
@@ -104,15 +109,67 @@ void CortisolCytokinesSimulation::startSimulation() const {
 
     fmt::print("Simulation done.\n");
 
-    if (this->plot) {
+    if (this->plot_all_values || this->plot_daily_averages) {
         fmt::print("\nStarting plotting.\n");
 
 #ifndef NDEBUG
         auto plotting_start = std::chrono::high_resolution_clock::now();
 #endif
+        constexpr std::array<std::string, 8> legends = {"Antigen", "Active Macrophages", "Resting Macrophages", "IL-10", "IL-6", "IL-8", "TNF-α", "Cortisol"};
 
-        CortisolCytokinesModel::plotResults(states, times);
-        CortisolCytokinesModel::plotDailyAverage(states, times);
+        if (this->plot_all_values) {
+            auto separated_states = CortisolCytokinesModel::separateStates(states);
+
+            // Antigen Results
+            std::vector<Utilities::Result<double, double>> antigen_results{{times, separated_states[0], legends[0]}};
+            Utilities::plotResults(antigen_results, "antigen");
+
+            // Macrophage Results
+            std::vector<Utilities::Result<double, double>> macrophages_results;
+            // active_macrophages and resting_macrophages are indices 1 and 2 respectively
+            for (int i = 1; i < 3; i++) {
+                macrophages_results.push_back({times, separated_states[i], legends[i]});
+            }
+            Utilities::plotResults(macrophages_results, "macrophages");
+
+            // Cytokines Results
+            std::vector<Utilities::Result<double, double>> cytokines_results;
+            for (int i = 3; i < 7; i++) {
+                cytokines_results.push_back({times, separated_states[i], legends[i]});
+            }
+            Utilities::plotResults(cytokines_results, "cytokines");
+
+            // Cortisol Results
+            std::vector<Utilities::Result<double, double>> cortisol_results{{times, separated_states[7], legends[7]}};
+            Utilities::plotResults(cortisol_results, "cortisol");
+        }
+
+        if(this->plot_daily_averages) {
+            auto [daily_averages, days] = CortisolCytokinesModel::calculateDailyAverages(states, times);
+
+            // Antigen Results
+            std::vector<Utilities::Result<int, double>> antigen_results{{days, daily_averages[0], legends[0]}};
+            Utilities::plotResults(antigen_results, "antigen_averages");
+
+            // Macrophage Results
+            std::vector<Utilities::Result<int, double>> macrophages_results;
+            // active_macrophages and resting_macrophages are indices 1 and 2 respectively
+            for (int i = 1; i < 3; i++) {
+                macrophages_results.push_back({days, daily_averages[i], legends[i]});
+            }
+            Utilities::plotResults(macrophages_results, "macrophages_averages");
+
+            // Cytokines Results
+            std::vector<Utilities::Result<int, double>> cytokines_results;
+            for (int i = 3; i < 7; i++) {
+                cytokines_results.push_back({days, daily_averages[i], legends[i]});
+            }
+            Utilities::plotResults(cytokines_results, "cytokines_averages");
+
+            // Cortisol Results
+            std::vector<Utilities::Result<int, double>> cortisol_results{{days, daily_averages[7], legends[7]}};
+            Utilities::plotResults(cortisol_results, "cortisol_averages");
+        }
 
 #ifndef NDEBUG
         auto plotting_end = std::chrono::high_resolution_clock::now();
