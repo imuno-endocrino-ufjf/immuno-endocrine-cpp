@@ -82,3 +82,6 @@ Temporary Items
 
 output/
 .direnv
+
+# vcpkg
+vcpkg_installed/
