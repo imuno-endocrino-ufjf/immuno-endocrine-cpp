@@ -142,3 +142,18 @@ Now we are done compiling the program and can run it through this command:
 ----
 ./build/immuno-endocrine-cpp
 ----
+
+== Cleaning Database
+
+If you want to clear all cached simulation data stored in the local database, you can remove the database file with the following command:
+
+[,bash]
+----
+rm database/immuno.db
+----
+
+[NOTE]
+====
+This command deletes the SQLite database file used to cache previous simulation results. 
+After running it, all stored simulations will be permanently removed and future runs will start with a fresh database.
+====
